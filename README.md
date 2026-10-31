@@ -60,11 +60,17 @@ Konfiguracja panelu jest w pliku `.pages.yml`.
 Nie trzeba robić miniatur ani zmniejszać zdjęć – strona sama przygotuje
 lekkie wersje (WebP) w kilku rozmiarach. Obsługiwane formaty: JPG, PNG, WebP, AVIF.
 
-## Ustawienia Cloudflare Pages
+## Ustawienia Cloudflare
+
+Strona jest wdrażana jako Worker `karolina-chrobot-new` (konfiguracja w `wrangler.jsonc`):
 
 - Build command: `npm run build`
-- Build output directory: `dist`
-- Zmienna środowiskowa: `NODE_VERSION = 22.23.4` (lub nowsza – wymóg Astro 7; ta sama wersja jest w `.nvmrc`)
+- Deploy command: `npx wrangler deploy`
+- Root directory: `/`
+- Zmienna buildu: `NODE_VERSION = 22.23.4` (lub nowsza – wymóg Astro 7; ta sama wersja jest w `.nvmrc`)
+
+Przy wdrożeniu jako projekt Cloudflare Pages: Build command `npm run build`,
+Build output directory `dist`, bez Deploy command.
 
 Stare adresy (`gallery.html`, `aboutme.html`) są przekierowywane na nowe przez `public/_redirects`.
 
