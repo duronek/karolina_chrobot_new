@@ -1,0 +1,109 @@
+# Konfiguracja panelu Pages CMS (https://app.pagescms.org).
+# Zdjęcia trafiają do src/tresci/<zbiór>/, a lista prac do src/dane/<zbiór>.yml.
+# Każdy zapis w panelu to commit do repozytorium – Cloudflare Pages sam przebuduje stronę.
+
+media:
+  - name: obrazy
+    label: Obrazy
+    input: src/tresci/obrazy
+    output: /src/tresci/obrazy
+    categories: [image]
+    rename: safe
+  - name: aranzacje
+    label: Aranżacje
+    input: src/tresci/aranzacje
+    output: /src/tresci/aranzacje
+    categories: [image]
+    rename: safe
+  - name: dyplomy
+    label: Dyplomy
+    input: src/tresci/dyplomy
+    output: /src/tresci/dyplomy
+    categories: [image]
+    rename: safe
+
+content:
+  - name: obrazy
+    label: Obrazy
+    type: file
+    path: src/dane/obrazy.yml
+    format: yaml
+    list: true
+    fields:
+      - name: zdjecie
+        label: Zdjęcie
+        type: image
+        required: true
+        options:
+          media: obrazy
+      - name: tytul
+        label: Tytuł
+        type: string
+      - name: technika
+        label: Technika
+        type: string
+        description: np. olej na płótnie, akwarela na papierze
+      - name: wymiary
+        label: Wymiary
+        type: string
+        description: np. 40 × 50 cm
+      - name: rok
+        label: Rok
+        type: string
+      - name: opis
+        label: Opis
+        type: text
+        description: Krótki opis widoczny w powiększeniu
+      - name: wyrozniony
+        label: Wyróżniony (ramka „Kobieta” na Stronie Głównej)
+        type: boolean
+      - name: ukryty
+        label: Ukryty (nie pokazuj na stronie)
+        type: boolean
+
+  - name: aranzacje
+    label: Aranżacje
+    type: file
+    path: src/dane/aranzacje.yml
+    format: yaml
+    list: true
+    fields:
+      - name: zdjecie
+        label: Zdjęcie
+        type: image
+        required: true
+        options:
+          media: aranzacje
+      - name: tytul
+        label: Tytuł
+        type: string
+      - name: opis
+        label: Opis
+        type: text
+      - name: ukryty
+        label: Ukryty (nie pokazuj na stronie)
+        type: boolean
+
+  - name: dyplomy
+    label: Dyplomy
+    type: file
+    path: src/dane/dyplomy.yml
+    format: yaml
+    list: true
+    fields:
+      - name: zdjecie
+        label: Zdjęcie
+        type: image
+        required: true
+        options:
+          media: dyplomy
+      - name: tytul
+        label: Tytuł
+        type: string
+        description: np. I miejsce – Ogólnopolski Konkurs Plastyczny
+      - name: rok
+        label: Rok
+        type: string
+      - name: ukryty
+        label: Ukryty (nie pokazuj na stronie)
+        type: boolean

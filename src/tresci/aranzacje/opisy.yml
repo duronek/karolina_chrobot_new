@@ -1,8 +1,0 @@
-# Opisy aranżacji (wszystkie pola są opcjonalne).
-# Aranżacja bez wpisu tutaj i tak pojawi się w galerii.
-#
-# Przykład:
-# aranzacja-038.jpg:
-#   tytul: Obraz w salonie
-#   opis: Krótki opis widoczny w powiększeniu.
-#   ukryty: true       # tymczasowo nie pokazuj na stronie

@@ -2,16 +2,14 @@ import type { ImageMetadata } from 'astro';
 import { parse } from 'yaml';
 
 /**
- * Zbiory zdjęć. Każdy zbiór to folder w src/tresci/<nazwa>/.
- * Wystarczy wrzucić plik graficzny do folderu – pojawi się na stronie po zbudowaniu.
- * Opcjonalne opisy (tytuł, technika, ...) trzymamy w pliku opisy.yml w tym samym folderze.
+ * Zbiory prac. Zdjęcia leżą w src/tresci/<zbior>/, a lista prac (kolejność, tytuły, opisy)
+ * w src/dane/<zbior>.yml – tę listę edytuje panel Pages CMS (konfiguracja w .pages.yml).
+ * Lista jest chronologiczna: ostatnia pozycja to najnowsza praca i wyświetla się jako pierwsza.
  */
 export type Zbior = 'obrazy' | 'aranzacje' | 'dyplomy';
 
-export interface Praca {
-  id: string;
-  plik: string;
-  image: ImageMetadata;
+interface Wpis {
+  zdjecie: string;
   tytul?: string;
   technika?: string;
   wymiary?: string;
@@ -21,39 +19,52 @@ export interface Praca {
   ukryty?: boolean;
 }
 
+export interface Praca extends Omit<Wpis, 'zdjecie'> {
+  id: string;
+  plik: string;
+  image: ImageMetadata;
+}
+
 const obrazki = import.meta.glob<{ default: ImageMetadata }>(
   '/src/tresci/*/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}',
   { eager: true },
 );
-const opisy = import.meta.glob<string>('/src/tresci/*/opisy.yml', {
+const listy = import.meta.glob<string>('/src/dane/*.yml', {
   eager: true,
   query: '?raw',
   import: 'default',
 });
 
-const wczytajOpisy = (zbior: Zbior): Record<string, Partial<Praca>> => {
-  const raw = opisy[`/src/tresci/${zbior}/opisy.yml`];
-  return (raw && parse(raw)) || {};
+const wczytajListe = (zbior: Zbior): Wpis[] => {
+  const raw = listy[`/src/dane/${zbior}.yml`];
+  return ((raw && parse(raw)) || []).filter((w: Wpis | null) => w?.zdjecie);
 };
 
-/** Zwraca prace z danego zbioru – najwyższy numer (najnowsza praca) na początku. */
+/** Zwraca prace z danego zbioru – najnowsza (ostatnia na liście) na początku. */
 export function getPrace(zbior: Zbior): Praca[] {
-  const meta = wczytajOpisy(zbior);
-  const prefix = `/src/tresci/${zbior}/`;
+  const lista = wczytajListe(zbior);
+  const naLiscie = new Set<string>();
+  const prace: Praca[] = [];
 
-  return Object.entries(obrazki)
-    .filter(([sciezka]) => sciezka.startsWith(prefix))
-    .map(([sciezka, mod]) => {
-      const plik = sciezka.slice(prefix.length);
-      return {
-        id: plik.replace(/\.[^.]+$/, ''),
-        plik,
-        image: mod.default,
-        ...(meta[plik] ?? {}),
-      };
-    })
-    .filter((p) => !p.ukryty)
-    .sort((a, b) => b.plik.localeCompare(a.plik, 'pl', { numeric: true }));
+  for (const { zdjecie, ...meta } of lista) {
+    const sciezka = zdjecie.startsWith('/') ? zdjecie : `/${zdjecie}`;
+    naLiscie.add(sciezka);
+    const mod = obrazki[sciezka];
+    if (!mod) {
+      console.warn(`[prace] ${zbior}: brak pliku ${sciezka} – pozycja pominięta`);
+      continue;
+    }
+    if (meta.ukryty) continue;
+    const plik = sciezka.split('/').pop()!;
+    prace.push({ id: plik.replace(/\.[^.]+$/, ''), plik, image: mod.default, ...meta });
+  }
+
+  const pominiete = Object.keys(obrazki).filter((s) => s.startsWith(`/src/tresci/${zbior}/`) && !naLiscie.has(s));
+  if (pominiete.length) {
+    console.warn(`[prace] ${zbior}: pliki bez wpisu w src/dane/${zbior}.yml (niewidoczne): ${pominiete.join(', ')}`);
+  }
+
+  return prace.reverse();
 }
 
 /** Podpis pracy widoczny w galerii i w podglądzie, np. „Kobieta · olej na płótnie · 2023”. */
