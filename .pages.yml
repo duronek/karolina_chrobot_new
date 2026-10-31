@@ -2,6 +2,11 @@
 # Zdjęcia trafiają do src/tresci/<zbiór>/, a lista prac do src/dane/<zbiór>.yml.
 # Każdy zapis w panelu to commit do repozytorium – Cloudflare Pages sam przebuduje stronę.
 
+# Commity od osób zaproszonych e-mailem zawierają ich imię i e-mail – w historii widać, kto co zmienił.
+settings:
+  commit:
+    identity: user
+
 media:
   - name: obrazy
     label: Obrazy
