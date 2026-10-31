@@ -1,0 +1,591 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Pedzel from '../components/Pedzel.astro';
+import { getPrace } from '../lib/prace';
+import karolina from '../tresci/zdjecia/karolina-glowna.jpg';
+
+const obrazy = getPrace('obrazy');
+const wyroznione = obrazy.filter((p) => p.wyrozniony);
+const slajdy = await Promise.all(
+  (wyroznione.length ? wyroznione : obrazy.slice(0, 8)).map((p) =>
+    getImage({ src: p.image, width: Math.min(p.image.width, 1100), format: 'webp', quality: 80 }),
+  ),
+);
+
+const najnowsze = await Promise.all(
+  obrazy.slice(0, 14).map(async (p) => ({
+    p,
+    img: await getImage({ src: p.image, height: 400, format: 'webp', quality: 75 }),
+  })),
+);
+
+const imie = 'Karolina Chrobot';
+---
+
+<Layout>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="blobs" aria-hidden="true">
+      <span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span>
+    </div>
+
+    <div class="container hero-grid">
+      <figure class="portrait" data-reveal="left">
+        <div class="frame">
+          <Image
+            src={karolina}
+            alt="Karolina Chrobot"
+            widths={[360, 540, 720, 945]}
+            sizes="(max-width: 900px) 80vw, 460px"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+        <span class="splash s1" aria-hidden="true"></span>
+        <span class="splash s2" aria-hidden="true"></span>
+      </figure>
+
+      <div class="intro">
+        <h1 class="name" aria-label={imie}>
+          {
+            imie.split(' ').map((slowo, w) => (
+              <>
+                <span class="word" aria-hidden="true">
+                  {slowo.split('').map((ch, i) => (
+                    <span class="ch" style={`--i:${w * 8 + i}`}>
+                      {ch}
+                    </span>
+                  ))}
+                </span>{' '}
+              </>
+            ))
+          }
+        </h1>
+
+        <div class="subtitle" data-reveal style="--delay:250ms">
+          <h2>Kolory i kształty inspirują mnie …</h2>
+          <Pedzel kolor="var(--pink)" />
+        </div>
+
+        <div class="text">
+          <p data-reveal style="--delay:350ms">
+            Jestem młodą artystką (ur. 2010 r.), która cały czas się uczy i rozwija swoje umiejętności. Swoją
+            fascynację malarstwem odkryłam w roku 2020.
+          </p>
+          <p data-reveal style="--delay:450ms">
+            Kocham tworzyć, nie ograniczam się jednak wyłącznie do malarstwa, eksperymentuję z rysunkiem ołówkiem,
+            węglem czy pastelami. Lubię również pracę z tkaniną czy gliną. Ta różnorodność technik i materiałów
+            sprawia, że mogę wyrazić siebie w wielu formach i stylach. Często biorę udział w konkursach plastycznych,
+            odnoszę sukcesy, które dają mi motywację do dalszego rozwoju.
+          </p>
+          <p data-reveal style="--delay:550ms">
+            Inspiruję się otoczeniem, emocjami, ludźmi, miejscami, które odwiedzam podróżując. Sztuka jest dla mnie
+            sposobem na spędzanie czasu i wyrażanie siebie.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRZEGLĄDAJ OBRAZY -->
+  <section class="section browse">
+    <div class="container browse-grid">
+      <div class="browse-text" data-reveal>
+        <p class="eyebrow">Galeria</p>
+        <h2>Przeglądaj moje obrazy</h2>
+        <Pedzel kolor="var(--blue)" />
+        <p class="lead">Zobacz moje dzieła posegregowane według kategorii.</p>
+        <a href="/galeria/" class="btn">
+          Galeria
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"
+            ><path
+              d="M5 12h14M13 6l6 6-6 6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path></svg
+          >
+        </a>
+      </div>
+
+      <a href="/galeria/" class="promo" data-reveal="zoom" aria-label="Kobieta – Malarstwo olejne. Przejdź do galerii">
+        <div class="slides" data-slides>
+          {
+            slajdy.map((s, i) => (
+              <img
+                src={s.src}
+                width={s.attributes.width}
+                height={s.attributes.height}
+                alt=""
+                class={i === 0 ? 'active' : undefined}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            ))
+          }
+        </div>
+        <div class="promo-text">
+          <h3 class="promo-header">Kobieta</h3>
+          <p class="promo-content">Malarstwo olejne</p>
+        </div>
+        <div class="dots" aria-hidden="true">
+          {slajdy.map((_, i) => <span class={i === 0 ? 'active' : undefined} />)}
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- NAJNOWSZE PRACE – przesuwający się pas -->
+  <section class="latest" aria-label="Najnowsze prace">
+    <div class="marquee">
+      {
+        [0, 1].map((k) => (
+          <ul class="track" aria-hidden={k === 1 ? 'true' : undefined}>
+            {najnowsze.map(({ p, img }) => (
+              <li>
+                <a href={`/galeria/#${p.id}`} tabindex={k === 1 ? -1 : undefined}>
+                  <img
+                    src={img.src}
+                    width={img.attributes.width}
+                    height={img.attributes.height}
+                    alt={k === 0 ? (p.tytul ?? 'Obraz Karoliny Chrobot') : ''}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Ramka „Kobieta” – obrazy zmieniają się co 5 sekund z płynnym przenikaniem
+  let timer: number | undefined;
+  document.addEventListener('astro:page-load', () => {
+    clearInterval(timer);
+    const box = document.querySelector<HTMLElement>('[data-slides]');
+    if (!box) return;
+    const slides = [...box.querySelectorAll('img')];
+    const dots = [...document.querySelectorAll('.dots span')];
+    if (slides.length < 2) return;
+    let n = 0;
+    timer = window.setInterval(() => {
+      slides[n].classList.remove('active');
+      dots[n]?.classList.remove('active');
+      n = (n + 1) % slides.length;
+      slides[n].loading = 'eager';
+      slides[n].classList.add('active');
+      dots[n]?.classList.add('active');
+    }, 5000);
+  });
+</script>
+
+<style>
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    padding-block: clamp(24px, 5vw, 72px) clamp(56px, 8vw, 110px);
+  }
+
+  .blobs {
+    position: absolute;
+    inset: -120px 0 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .blobs span {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.45;
+    animation: drift 22s ease-in-out infinite alternate;
+  }
+
+  .b1 {
+    width: 420px;
+    height: 420px;
+    left: -120px;
+    top: 80px;
+    background: var(--yellow);
+  }
+
+  .b2 {
+    width: 380px;
+    height: 380px;
+    right: -80px;
+    top: 0;
+    background: var(--pink);
+    animation-delay: -6s !important;
+  }
+
+  .b3 {
+    width: 340px;
+    height: 340px;
+    right: 22%;
+    bottom: -60px;
+    background: var(--blue);
+    opacity: 0.25 !important;
+    animation-delay: -12s !important;
+  }
+
+  .b4 {
+    width: 260px;
+    height: 260px;
+    left: 30%;
+    top: 30%;
+    background: var(--green);
+    opacity: 0.18 !important;
+    animation-delay: -3s !important;
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(60px, -40px) scale(1.12);
+    }
+    100% {
+      transform: translate(-40px, 50px) scale(0.95);
+    }
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .portrait {
+    position: relative;
+    margin: 0;
+    justify-self: center;
+    width: min(100%, 460px);
+  }
+
+  .frame {
+    position: relative;
+    z-index: 1;
+    padding: 12px;
+    background: var(--frame);
+    border-radius: 6px;
+    box-shadow: var(--shadow-lg);
+    transform: rotate(-2deg);
+    transition: transform 0.8s var(--ease);
+  }
+
+  .portrait:hover .frame {
+    transform: rotate(0deg) scale(1.01);
+  }
+
+  .frame img {
+    width: 100%;
+    aspect-ratio: 4 / 6;
+    object-fit: cover;
+    object-position: center 35%;
+    border-radius: 2px;
+  }
+
+  .splash {
+    position: absolute;
+    border-radius: 47% 53% 41% 59% / 54% 38% 62% 46%;
+    z-index: 0;
+    animation: morph 12s ease-in-out infinite alternate;
+  }
+
+  .s1 {
+    width: 46%;
+    aspect-ratio: 1;
+    right: -12%;
+    top: -6%;
+    background: var(--yellow);
+  }
+
+  .s2 {
+    width: 38%;
+    aspect-ratio: 1;
+    left: -10%;
+    bottom: -6%;
+    background: var(--blue);
+    opacity: 0.85;
+    animation-delay: -5s;
+  }
+
+  @keyframes morph {
+    0% {
+      border-radius: 47% 53% 41% 59% / 54% 38% 62% 46%;
+      transform: rotate(0deg);
+    }
+    100% {
+      border-radius: 62% 38% 57% 43% / 38% 61% 39% 62%;
+      transform: rotate(25deg);
+    }
+  }
+
+  .name {
+    font-size: clamp(2.8rem, 1.6rem + 5vw, 5.6rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.25em;
+    line-height: 1.02;
+  }
+
+  .word,
+  .ch {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .ch {
+      opacity: 0;
+      transform: translateY(0.5em) rotate(8deg);
+      animation: letter 0.9s var(--ease) forwards;
+      animation-delay: calc(0.1s + var(--i) * 0.045s);
+    }
+  }
+
+  @keyframes letter {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .subtitle {
+    margin-bottom: 1.6rem;
+  }
+
+  .subtitle h2 {
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.3rem);
+    font-style: italic;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  .text p {
+    color: var(--ink-soft);
+  }
+
+  /* ---------- PRZEGLĄDAJ ---------- */
+  .browse {
+    background: var(--paper-2);
+    position: relative;
+  }
+
+  .browse::before {
+    content: '';
+    position: absolute;
+    inset: -1px 0 auto;
+    height: 40px;
+    background: var(--paper);
+    clip-path: polygon(0 0, 100% 0, 100% 30%, 70% 85%, 40% 40%, 15% 90%, 0 50%);
+  }
+
+  .browse-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .browse-text h2 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem);
+    margin: 0;
+  }
+
+  .lead {
+    margin: 1.2rem 0 2rem;
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+  }
+
+  .promo {
+    position: relative;
+    display: block;
+    height: clamp(380px, 48vw, 560px);
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--ink);
+    box-shadow:
+      0 0 0 10px var(--frame),
+      var(--shadow-lg);
+    text-decoration: none;
+    color: #fff;
+    isolation: isolate;
+  }
+
+  .slides img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.12);
+    transition:
+      opacity 1.6s ease,
+      transform 7s linear;
+  }
+
+  .slides img.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .promo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(20 18 15 / 70%), transparent 50%);
+    transition: background 0.8s var(--ease);
+  }
+
+  .promo:hover::after {
+    background: linear-gradient(to top, rgb(20 18 15 / 80%), rgb(20 18 15 / 10%) 70%);
+  }
+
+  .promo-text {
+    position: absolute;
+    left: clamp(20px, 3vw, 36px);
+    bottom: clamp(20px, 3vw, 36px);
+    z-index: 1;
+  }
+
+  .promo-header {
+    font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+    margin: 0;
+    transform: translateY(12px);
+    transition: transform 0.7s var(--ease);
+  }
+
+  .promo-content {
+    margin: 0;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+    opacity: 0.85;
+    transform: translateY(12px);
+    transition: transform 0.7s var(--ease) 0.05s;
+  }
+
+  .promo:hover .promo-header,
+  .promo:hover .promo-content {
+    transform: none;
+  }
+
+  .dots {
+    position: absolute;
+    right: clamp(20px, 3vw, 36px);
+    bottom: clamp(26px, 3vw, 44px);
+    z-index: 1;
+    display: flex;
+    gap: 6px;
+  }
+
+  .dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 6px;
+    background: rgb(255 255 255 / 45%);
+    transition:
+      width 0.6s var(--ease),
+      background 0.6s;
+  }
+
+  .dots span.active {
+    width: 22px;
+    background: #fff;
+  }
+
+  /* ---------- NAJNOWSZE ---------- */
+  .latest {
+    padding-block: clamp(40px, 6vw, 72px) 0;
+    overflow: hidden;
+  }
+
+  .marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 70s linear infinite;
+  }
+
+  .latest:hover .marquee {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .track {
+    display: flex;
+    gap: 20px;
+    padding: 12px 10px;
+    margin: 0;
+    list-style: none;
+  }
+
+  .track a {
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 4px var(--frame),
+      var(--shadow);
+    transition: transform 0.5s var(--ease);
+  }
+
+  .track a:hover {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+
+  .track img {
+    height: clamp(150px, 18vw, 220px);
+    width: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .latest {
+      overflow-x: auto;
+    }
+  }
+
+  /* ---------- RESPONSYWNOŚĆ ---------- */
+  @media (max-width: 900px) {
+    .hero-grid,
+    .browse-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      width: min(80%, 380px);
+    }
+
+    .intro,
+    .browse-text {
+      text-align: center;
+    }
+
+    .subtitle :global(.pedzel),
+    .browse-text :global(.pedzel) {
+      margin-inline: auto;
+    }
+
+    .browse-text .eyebrow {
+      justify-content: center;
+    }
+  }
+</style>

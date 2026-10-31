@@ -1,0 +1,319 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Galeria from '../components/Galeria.astro';
+import Pedzel from '../components/Pedzel.astro';
+import { getPrace } from '../lib/prace';
+import karolina from '../tresci/zdjecia/karolina-o-mnie.jpg';
+import mapa from '../assets/mapa-leszno.png';
+
+const dyplomy = getPrace('dyplomy');
+---
+
+<Layout
+  title="O mnie"
+  description="Karolina Chrobot – o mnie, techniki i tematyka prac, dyplomy i nagrody z konkursów plastycznych, kontakt."
+>
+  <!-- O MNIE -->
+  <section class="container about">
+    <figure class="portrait" data-reveal="left">
+      <Image src={karolina} alt="Karolina Chrobot" widths={[360, 540, 720, 1080]} sizes="(max-width: 900px) 80vw, 400px" loading="eager" />
+    </figure>
+
+    <div class="about-text">
+      <p class="eyebrow" data-reveal>O mnie</p>
+      <div data-reveal style="--delay:100ms">
+        <h1>Kolory i kształty inspirują mnie …</h1>
+        <Pedzel kolor="var(--pink)" />
+      </div>
+      <p data-reveal style="--delay:200ms">
+        Zajmuję się głównie malarstwem sztalugowym, a moje prace powstają przy użyciu różnych rodzajów farb, takich jak
+        farby akrylowe, olejne i akwarele. Nie ograniczam się jednak wyłącznie do obrazów – eksperymentuję także z
+        rysunkiem – ołówkiem, węglem czy pastelami. Lubię także prace z tkaniną czy gliną, tworząc ceramikę. Ta
+        różnorodność technik i materiałów sprawia, że mogę wyrazić siebie w wielu różnych formach i stylach.
+      </p>
+      <p data-reveal style="--delay:300ms">
+        Jeśli chodzi o tematykę moich prac, uwielbiam eksperymentować. Często sięgam do abstrakcji, ale chętnie maluję
+        martwą naturę, pejzaże i kwiaty. Barwy odgrywają dla mnie istotną rolę, co sprawia, że moje prace są zawsze pełne
+        życia i kolorów.
+      </p>
+      <p data-reveal style="--delay:400ms">
+        Jestem młodą artystką, która cały czas się uczy i rozwija. Udział w konkursach plastycznych i warsztaty dają mi
+        motywację do dalszego rozwoju. Nieustannie poszukuję swojej drogi artystycznej i jestem gotowa na nowe wyzwania i
+        możliwości w świecie sztuki.
+      </p>
+    </div>
+  </section>
+
+  <!-- DYPLOMY -->
+  <section class="section awards">
+    <div class="container">
+      <div class="awards-head" data-reveal>
+        <h2>Dyplomy/Nagrody</h2>
+        <Pedzel kolor="var(--yellow)" />
+        <p class="counter" data-count={dyplomy.length}>
+          <strong>{dyplomy.length}</strong>
+        </p>
+      </div>
+      <Galeria prace={dyplomy} id="dyplomy" alt="dyplom Karoliny Chrobot" wiersz={220} />
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section class="section container contact">
+    <div class="map" data-reveal="left">
+      <Image src={mapa} alt="mapa – Leszno" widths={[400, 740]} sizes="(max-width: 900px) 90vw, 560px" />
+      <span class="pin" aria-hidden="true"></span>
+    </div>
+    <div class="contact-text" data-reveal="right">
+      <h2>Kontakt</h2>
+      <Pedzel kolor="var(--green)" />
+      <ul>
+        <li>
+          <a href="mailto:krischr@wp.pl">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"
+              ><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg
+            >
+            krischr@wp.pl
+          </a>
+        </li>
+        <li>
+          <a href="tel:+48509058714">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"
+              ><path
+                d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"
+              ></path></svg
+            >
+            tel: 509058714
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Licznik dyplomów odlicza od zera, gdy pojawi się na ekranie
+  document.addEventListener('astro:page-load', () => {
+    const el = document.querySelector<HTMLElement>('[data-count]');
+    const strong = el?.querySelector('strong');
+    if (!el || !strong || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const target = Number(el.dataset.count);
+    strong.textContent = '0';
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const start = performance.now();
+      const step = (t: number) => {
+        const k = Math.min(1, (t - start) / 1400);
+        strong.textContent = String(Math.round(target * (1 - Math.pow(1 - k, 3))));
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+    io.observe(el);
+  });
+</script>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: start;
+    padding-block: clamp(24px, 5vw, 72px) clamp(40px, 6vw, 80px);
+  }
+
+  .portrait {
+    margin: 0;
+    position: sticky;
+    top: 110px;
+    padding: 12px;
+    background: var(--frame);
+    border-radius: 6px;
+    box-shadow: var(--shadow-lg);
+    rotate: 1.5deg;
+  }
+
+  .portrait::before {
+    content: '';
+    position: absolute;
+    inset: auto -18px -18px auto;
+    width: 55%;
+    aspect-ratio: 1;
+    z-index: -1;
+    background: var(--pink);
+    border-radius: 47% 53% 41% 59% / 54% 38% 62% 46%;
+  }
+
+  .portrait :global(img) {
+    width: 100%;
+    border-radius: 2px;
+  }
+
+  .about-text h1 {
+    font-size: clamp(2rem, 1.3rem + 2.6vw, 3.3rem);
+    font-style: italic;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  .about-text :global(.pedzel) {
+    margin-bottom: 1.8rem;
+  }
+
+  .about-text p:not(.eyebrow) {
+    color: var(--ink-soft);
+  }
+
+  .awards {
+    background: var(--paper-2);
+  }
+
+  .awards-head {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    margin-bottom: clamp(32px, 4vw, 56px);
+  }
+
+  .awards-head h2 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem);
+    margin: 0;
+  }
+
+  .counter {
+    margin: 0.6rem 0 0;
+  }
+
+  .counter strong {
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+    font-weight: 600;
+    background: linear-gradient(120deg, var(--red), var(--yellow), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: clamp(32px, 6vw, 96px);
+    align-items: center;
+  }
+
+  .map {
+    position: relative;
+    max-width: 560px;
+    justify-self: center;
+  }
+
+  .map :global(img) {
+    border-radius: var(--radius);
+    box-shadow:
+      0 0 0 8px var(--frame),
+      var(--shadow-lg);
+  }
+
+  /* Pulsująca pinezka nad napisem „Leszno” na mapie */
+  .pin {
+    position: absolute;
+    left: 63%;
+    top: 41%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 0 rgb(229 72 77 / 60%);
+    animation: ping 2.2s var(--ease) infinite;
+  }
+
+  @keyframes ping {
+    to {
+      box-shadow: 0 0 0 26px rgb(229 72 77 / 0%);
+    }
+  }
+
+  .contact-text h2 {
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.2rem);
+    margin: 0;
+  }
+
+  .contact-text ul {
+    list-style: none;
+    padding: 0;
+    margin: 1.6rem 0 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .contact-text a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-family: var(--serif);
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+    text-decoration: none;
+    padding: 0.5rem 1.1rem 0.5rem 0.6rem;
+    border-radius: 999px;
+    transition:
+      background 0.3s,
+      transform 0.4s var(--ease);
+  }
+
+  .contact-text a:hover {
+    background: #fff;
+    box-shadow: var(--shadow);
+    transform: translateX(6px);
+  }
+
+  .contact-text svg {
+    flex: none;
+    padding: 9px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--ink);
+    fill: none;
+    stroke: var(--paper);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (max-width: 900px) {
+    .about,
+    .contact {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      position: relative;
+      top: 0;
+      width: min(80%, 380px);
+      justify-self: center;
+    }
+
+    .about-text,
+    .contact-text {
+      text-align: center;
+    }
+
+    .about-text :global(.pedzel),
+    .contact-text :global(.pedzel) {
+      margin-inline: auto;
+    }
+
+    .about-text .eyebrow {
+      justify-content: center;
+    }
+
+    .contact-text ul {
+      justify-items: center;
+    }
+  }
+</style>

@@ -1,0 +1,158 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { getImage } from 'astro:assets';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ogDefault from '../tresci/zdjecia/karolina-glowna.jpg';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Karolina Chrobot – młoda artystka (ur. 2010 r.). Malarstwo olejne, akrylowe i akwarele, rysunek, aranżacje wnętrz. Galeria obrazów, dyplomy i nagrody.',
+} = Astro.props;
+
+const fullTitle = title ? `${title} | Karolina Chrobot` : 'Karolina Chrobot';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = await getImage({ src: ogDefault, width: 1200, format: 'jpg' });
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#fbf8f3" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:site_name" content="Karolina Chrobot" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(og.src, Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip" href="#tresc">Przejdź do treści</a>
+    <Header />
+    <main id="tresc">
+      <slot />
+    </main>
+    <Footer />
+
+    <button class="scroll-up" type="button" aria-label="Przewiń do góry">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </button>
+
+    <script>
+      // Elementy z atrybutem data-reveal pojawiają się płynnie, gdy wjeżdżają w ekran.
+      const initReveal = () => {
+        const els = document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-visible)');
+        if (!('IntersectionObserver' in window)) {
+          els.forEach((el) => el.classList.add('is-visible'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              // Pokazujemy też elementy przeskoczone (nad ekranem), np. po kliknięciu w link z #.
+              if (!e.isIntersecting && e.boundingClientRect.top > 0) continue;
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        els.forEach((el) => io.observe(el));
+      };
+
+      const initScrollUp = () => {
+        const btn = document.querySelector<HTMLButtonElement>('.scroll-up');
+        if (!btn) return;
+        btn.onclick = () => window.scrollTo({ top: 0 });
+        const onScroll = () => {
+          const y = window.scrollY;
+          btn.classList.toggle('visible', y > 600);
+          document.documentElement.classList.toggle('scrolled', y > 20);
+        };
+        window.onscroll = onScroll;
+        onScroll();
+      };
+
+      document.addEventListener('astro:page-load', () => {
+        initReveal();
+        initScrollUp();
+      });
+    </script>
+
+    <style>
+      .skip {
+        position: absolute;
+        left: 1rem;
+        top: -100px;
+        z-index: 100;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+      }
+
+      .skip:focus {
+        top: 1rem;
+      }
+
+      main {
+        display: block;
+        min-height: 60vh;
+        overflow-x: clip;
+      }
+
+      .scroll-up {
+        position: fixed;
+        right: clamp(16px, 3vw, 32px);
+        bottom: clamp(16px, 3vw, 32px);
+        z-index: 40;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 0;
+        display: grid;
+        place-items: center;
+        color: var(--paper);
+        background: var(--ink);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(16px) scale(0.9);
+        transition:
+          opacity 0.4s var(--ease),
+          transform 0.4s var(--ease),
+          background 0.3s;
+      }
+
+      .scroll-up.visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+      }
+
+      .scroll-up:hover {
+        background: var(--blue);
+      }
+    </style>
+  </body>
+</html>

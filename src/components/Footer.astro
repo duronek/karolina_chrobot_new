@@ -1,0 +1,58 @@
+---
+const rok = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="paint" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="container inner">
+    <p>| Wszelkie prawa zastrzeżone © 2023{rok > 2023 ? `–${rok}` : ''} |</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: clamp(40px, 6vw, 80px);
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+
+  .paint {
+    display: flex;
+    height: 6px;
+  }
+
+  .paint span {
+    flex: 1;
+  }
+
+  .paint span:nth-child(1) {
+    background: var(--red);
+  }
+
+  .paint span:nth-child(2) {
+    background: var(--yellow);
+  }
+
+  .paint span:nth-child(3) {
+    background: var(--green);
+  }
+
+  .paint span:nth-child(4) {
+    background: var(--blue);
+  }
+
+  .paint span:nth-child(5) {
+    background: var(--violet);
+  }
+
+  .inner {
+    padding-block: 2rem;
+  }
+
+  .inner p {
+    margin: 0;
+  }
+</style>

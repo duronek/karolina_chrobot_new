@@ -1,0 +1,316 @@
+---
+import { getImage } from 'astro:assets';
+import { podpis, type Praca } from '../lib/prace';
+// Styl importowany tutaj (a nie w <script>), by przetrwał przejścia między stronami.
+import 'photoswipe/style.css';
+
+interface Props {
+  prace: Praca[];
+  /** Identyfikator galerii – używany w adresie podglądu (#obraz-123). */
+  id: string;
+  /** Tekst alternatywny dla prac bez tytułu, np. „Obraz Karoliny Chrobot”. */
+  alt: string;
+  /** Wysokość rzędu miniatur w px (na dużych ekranach). */
+  wiersz?: number;
+}
+
+const { prace, id, alt, wiersz = 260 } = Astro.props;
+
+const SZEROKOSCI = [320, 480, 720];
+const MAX_PELNY = 2000;
+
+const items = await Promise.all(
+  prace.map(async (p) => {
+    const { width: w, height: h } = p.image;
+    const widths = SZEROKOSCI.filter((x) => x < w);
+    const thumb = await getImage({
+      src: p.image,
+      widths: widths.length ? widths : [w],
+      format: 'webp',
+      quality: 78,
+    });
+    const fullW = Math.min(w, MAX_PELNY);
+    const full = await getImage({ src: p.image, width: fullW, format: 'webp', quality: 86 });
+    return {
+      p,
+      ar: +(w / h).toFixed(4),
+      thumb,
+      full,
+      fullW,
+      fullH: Math.round((h * fullW) / w),
+      caption: podpis(p),
+    };
+  }),
+);
+---
+
+<div class="justified" data-gallery={id} style={`--row:${wiersz}px`}>
+  {
+    items.map(({ p, ar, thumb, full, fullW, fullH, caption }, i) => (
+      <a
+        class="tile"
+        href={full.src}
+        data-pswp-width={fullW}
+        data-pswp-height={fullH}
+        data-id={p.id}
+        data-caption={caption}
+        data-opis={p.opis}
+        data-reveal
+        style={`--ar:${ar};--delay:${(i % 8) * 55}ms`}
+      >
+        <img
+          src={thumb.src}
+          srcset={thumb.srcSet.attribute}
+          sizes={`(max-width: 600px) ${Math.round(ar * 180)}px, ${Math.round(ar * wiersz * 1.25)}px`}
+          width={thumb.attributes.width}
+          height={thumb.attributes.height}
+          alt={p.tytul ? `${p.tytul} – ${alt}` : `${alt} (${p.id})`}
+          loading={i < 6 ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+        <span class="hover" aria-hidden="true">
+          {caption ? <span class="cap">{caption}</span> : null}
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-4-4M11 8v6M8 11h6" />
+          </svg>
+        </span>
+      </a>
+    ))
+  }
+</div>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+  let lightboxes: PhotoSwipeLightbox[] = [];
+
+  const initGalleries = () => {
+    document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+      // Płynne pojawienie się miniatury po załadowaniu
+      gallery.querySelectorAll('img').forEach((img) => {
+        const done = () => img.classList.add('loaded');
+        if (img.complete) done();
+        else img.addEventListener('load', done, { once: true });
+      });
+
+      const lightbox = new PhotoSwipeLightbox({
+        gallery,
+        children: 'a.tile',
+        pswpModule: () => import('photoswipe'),
+        bgOpacity: 0.95,
+        showHideAnimationType: 'zoom',
+        padding: { top: 48, bottom: 96, left: 16, right: 16 },
+        wheelToZoom: true,
+        closeTitle: 'Zamknij',
+        zoomTitle: 'Powiększ',
+        arrowPrevTitle: 'Poprzedni',
+        arrowNextTitle: 'Następny',
+        errorMsg: 'Nie udało się wczytać obrazu.',
+        indexIndicatorSep: ' / ',
+      });
+
+      lightbox.on('uiRegister', () => {
+        lightbox.pswp?.ui?.registerElement({
+          name: 'caption',
+          order: 9,
+          isButton: false,
+          appendTo: 'root',
+          onInit: (el, pswp) => {
+            pswp.on('change', () => {
+              const a = pswp.currSlide?.data.element as HTMLElement | undefined;
+              const title = a?.dataset.caption ?? '';
+              const opis = a?.dataset.opis ?? '';
+              el.replaceChildren();
+              if (title) el.append(Object.assign(document.createElement('strong'), { textContent: title }));
+              if (opis) el.append(Object.assign(document.createElement('span'), { textContent: opis }));
+              el.hidden = !title && !opis;
+              if (a?.dataset.id) history.replaceState(history.state, '', `#${a.dataset.id}`);
+            });
+          },
+        });
+      });
+      lightbox.on('close', () => history.replaceState(history.state, '', location.pathname + location.search));
+      lightbox.init();
+      lightboxes.push(lightbox);
+
+      // Bezpośredni link do pracy, np. /galeria/#obraz-150
+      const hash = decodeURIComponent(location.hash.slice(1));
+      if (hash) {
+        const tiles = [...gallery.querySelectorAll<HTMLElement>('a.tile')];
+        const index = tiles.findIndex((t) => t.dataset.id === hash);
+        if (index >= 0) lightbox.loadAndOpen(index, { gallery });
+      }
+    });
+  };
+
+  document.addEventListener('astro:page-load', initGalleries);
+  document.addEventListener('astro:before-swap', () => {
+    lightboxes.forEach((l) => l.destroy());
+    lightboxes = [];
+  });
+</script>
+
+<style>
+  /*
+   * Układ „justified”: miniatury w rzędach o równej wysokości, z zachowaniem proporcji
+   * każdego obrazu. Szerokość kafelka rośnie proporcjonalnie do --ar (szerokość/wysokość).
+   */
+  .justified {
+    --gap: clamp(12px, 1.6vw, 22px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+  }
+
+  .justified::after {
+    content: '';
+    flex-grow: 999999;
+  }
+
+  .tile {
+    flex: var(--ar) 1 calc(var(--ar) * var(--row));
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--paper-2);
+    box-shadow:
+      0 0 0 5px var(--frame),
+      var(--shadow);
+    cursor: zoom-in;
+    transition:
+      box-shadow 0.5s var(--ease),
+      transform 0.5s var(--ease),
+      opacity 0.9s var(--ease) var(--delay, 0s);
+  }
+
+  .tile img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--ar);
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.06);
+    filter: blur(8px);
+    transition:
+      opacity 0.8s var(--ease),
+      transform 1.2s var(--ease),
+      filter 0.8s var(--ease);
+  }
+
+  .tile img:global(.loaded) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  @media (scripting: none) {
+    .tile img {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .tile:hover,
+  .tile:focus-visible {
+    transform: translateY(-4px) rotate(var(--tilt, -0.4deg));
+    box-shadow:
+      0 0 0 5px var(--frame),
+      var(--shadow-lg);
+    z-index: 1;
+  }
+
+  .tile:nth-child(even) {
+    --tilt: 0.4deg;
+  }
+
+  .tile:hover img:global(.loaded) {
+    transform: scale(1.05);
+  }
+
+  .hover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.9rem;
+    color: #fff;
+    background: linear-gradient(to top, rgb(20 18 15 / 65%), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.5s var(--ease);
+  }
+
+  .tile:hover .hover,
+  .tile:focus-visible .hover {
+    opacity: 1;
+  }
+
+  .cap {
+    font-size: 0.85rem;
+    line-height: 1.35;
+    transform: translateY(10px);
+    transition: transform 0.5s var(--ease);
+  }
+
+  .tile:hover .cap {
+    transform: none;
+  }
+
+  .hover svg {
+    flex: none;
+    margin-left: auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    transform: scale(0.6);
+    transition: transform 0.5s var(--ease);
+  }
+
+  .tile:hover .hover svg {
+    transform: scale(1);
+  }
+
+  @media (max-width: 600px) {
+    .justified {
+      --row: 170px !important;
+    }
+  }
+
+  /* Podpis w powiększeniu (PhotoSwipe) */
+  :global(.pswp__caption) {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    max-width: min(640px, calc(100% - 32px));
+    padding: 0.7rem 1.2rem;
+    border-radius: 14px;
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  :global(.pswp__caption strong) {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.1rem;
+  }
+
+  :global(.pswp__caption[hidden]) {
+    display: none;
+  }
+
+  :global(.pswp) {
+    --pswp-bg: #14120f;
+  }
+</style>

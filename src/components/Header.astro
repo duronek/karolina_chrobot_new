@@ -1,0 +1,254 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+
+const links = [
+  { href: '/', label: 'Strona Główna' },
+  { href: '/galeria/', label: 'Galeria' },
+  { href: '/o-mnie/', label: 'O mnie' },
+];
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="header">
+  <div class="container bar">
+    <a href="/" class="logo" aria-label="Karolina Chrobot – Strona Główna">
+      <Image src={logo} alt="Karolina Chrobot" width={260} densities={[1, 2]} loading="eager" />
+    </a>
+
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav id="nav" class="nav" aria-label="Menu główne">
+      <ul>
+        {
+          links.map((l, i) => (
+            <li style={`--i:${i}`}>
+              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const btn = document.querySelector<HTMLButtonElement>('.menu-toggle');
+    const html = document.documentElement;
+    html.classList.remove('menu-open');
+    if (!btn) return;
+    btn.onclick = () => {
+      const open = html.classList.toggle('menu-open');
+      btn.setAttribute('aria-expanded', String(open));
+    };
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    transition:
+      background 0.4s,
+      box-shadow 0.4s,
+      backdrop-filter 0.4s;
+  }
+
+  :global(html.scrolled) .header {
+    background: rgb(251 248 243 / 82%);
+    backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow: 0 1px 0 var(--line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 104px;
+    transition: height 0.4s var(--ease);
+  }
+
+  :global(html.scrolled) .bar {
+    height: 76px;
+  }
+
+  .logo {
+    display: block;
+    position: relative;
+    z-index: 2;
+  }
+
+  .logo img {
+    width: clamp(170px, 22vw, 240px);
+    transition:
+      width 0.4s var(--ease),
+      transform 0.6s var(--ease);
+  }
+
+  :global(html.scrolled) .logo img {
+    width: clamp(150px, 16vw, 190px);
+  }
+
+  .logo:hover img {
+    transform: rotate(-2deg) scale(1.03);
+  }
+
+  .nav ul {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav a {
+    position: relative;
+    text-decoration: none;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    padding-block: 0.4rem;
+  }
+
+  /* Pociągnięcie pędzla pod aktywną zakładką */
+  .nav a::after {
+    content: '';
+    position: absolute;
+    left: -4%;
+    right: -4%;
+    bottom: -2px;
+    height: 9px;
+    background: var(--c, var(--yellow));
+    opacity: 0.55;
+    border-radius: 60% 40% 55% 45% / 70% 60% 40% 30%;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s var(--ease);
+    z-index: -1;
+  }
+
+  .nav li:nth-child(1) a {
+    --c: var(--yellow);
+  }
+
+  .nav li:nth-child(2) a {
+    --c: var(--blue);
+  }
+
+  .nav li:nth-child(3) a {
+    --c: var(--pink);
+  }
+
+  .nav a:hover::after,
+  .nav a[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 760px) {
+    .bar {
+      height: 84px;
+    }
+
+    /* backdrop-filter tworzy kontener dla position:fixed – przy otwartym menu go wyłączamy */
+    :global(html.menu-open) .header {
+      backdrop-filter: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    :global(html.menu-open body) {
+      overflow: hidden;
+    }
+
+    .menu-toggle {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 6px;
+      width: 48px;
+      height: 48px;
+      place-content: center;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      width: 26px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--ink);
+      transition:
+        transform 0.4s var(--ease),
+        opacity 0.3s;
+    }
+
+    :global(html.menu-open) .menu-toggle span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    :global(html.menu-open) .menu-toggle span:nth-child(2) {
+      opacity: 0;
+    }
+
+    :global(html.menu-open) .menu-toggle span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .nav {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 15% 20%, rgb(244 183 63 / 35%), transparent 40%),
+        radial-gradient(circle at 85% 80%, rgb(58 155 224 / 30%), transparent 45%),
+        radial-gradient(circle at 80% 15%, rgb(243 152 155 / 35%), transparent 40%), var(--paper);
+      clip-path: circle(0 at calc(100% - 40px) 42px);
+      transition: clip-path 0.7s var(--ease);
+    }
+
+    :global(html.menu-open) .nav {
+      clip-path: circle(150% at calc(100% - 40px) 42px);
+    }
+
+    .nav ul {
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav a {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+    }
+
+    .nav li {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.5s var(--ease),
+        transform 0.5s var(--ease);
+    }
+
+    :global(html.menu-open) .nav li {
+      opacity: 1;
+      transform: none;
+      transition-delay: calc(0.15s + var(--i) * 0.08s);
+    }
+  }
+</style>

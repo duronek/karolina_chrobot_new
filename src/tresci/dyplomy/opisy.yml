@@ -1,0 +1,8 @@
+# Opisy dyplomów (wszystkie pola są opcjonalne).
+# Dyplom bez wpisu tutaj i tak pojawi się na stronie „O mnie”.
+#
+# Przykład:
+# dyplom-047.jpg:
+#   tytul: I miejsce – Ogólnopolski Konkurs Plastyczny
+#   rok: 2025
+#   ukryty: true       # tymczasowo nie pokazuj na stronie

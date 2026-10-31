@@ -1,0 +1,32 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Nie znaleziono strony">
+  <section class="container section nf">
+    <p class="big" data-reveal>404</p>
+    <h1 data-reveal style="--delay:100ms">Nie znaleziono strony</h1>
+    <p data-reveal style="--delay:200ms">Ta strona nie istnieje lub została przeniesiona.</p>
+    <a class="btn" href="/" data-reveal style="--delay:300ms">Strona Główna</a>
+  </section>
+</Layout>
+
+<style>
+  .nf {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+
+  .big {
+    font-family: var(--serif);
+    font-size: clamp(5rem, 3rem + 10vw, 10rem);
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+    background: linear-gradient(120deg, var(--red), var(--yellow), var(--green), var(--blue), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>

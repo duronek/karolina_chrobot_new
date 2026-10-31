@@ -1,0 +1,7 @@
+# Przekierowania ze starych adresów strony (Cloudflare Pages)
+/index.html     /            301
+/index          /            301
+/gallery.html   /galeria/    301
+/gallery        /galeria/    301
+/aboutme.html   /o-mnie/     301
+/aboutme        /o-mnie/     301

@@ -1,0 +1,43 @@
+---
+// Pociągnięcie pędzla podkreślające nagłówek – rysuje się, gdy nagłówek pojawi się na ekranie.
+interface Props {
+  kolor?: string;
+}
+const { kolor = 'var(--yellow)' } = Astro.props;
+---
+
+<svg class="pedzel" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true" style={`--kolor:${kolor}`}>
+  <path d="M4 15 C 60 5, 120 19, 180 11 S 270 6, 296 12" pathLength="1"></path>
+</svg>
+
+<style>
+  .pedzel {
+    display: block;
+    width: min(100%, 320px);
+    height: 18px;
+    margin-top: -0.2em;
+    overflow: visible;
+  }
+
+  path {
+    fill: none;
+    stroke: var(--kolor);
+    stroke-width: 9;
+    stroke-linecap: round;
+    opacity: 0.7;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    path {
+      stroke-dashoffset: 1;
+      transition: stroke-dashoffset 1.3s var(--ease) 0.35s;
+    }
+
+    :global(.is-visible) path,
+    :global(.is-visible) > .pedzel path {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

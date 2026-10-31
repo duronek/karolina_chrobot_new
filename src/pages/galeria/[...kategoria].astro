@@ -1,0 +1,152 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Galeria from '../../components/Galeria.astro';
+import { getPrace, type Zbior } from '../../lib/prace';
+
+export function getStaticPaths() {
+  return [
+    { params: { kategoria: undefined }, props: { zbior: 'obrazy' as Zbior } },
+    { params: { kategoria: 'aranzacje' }, props: { zbior: 'aranzacje' as Zbior } },
+  ];
+}
+
+const { zbior } = Astro.props;
+const prace = getPrace(zbior);
+const jestObrazy = zbior === 'obrazy';
+
+const liczba = (n: number) => {
+  const r10 = n % 10;
+  const r100 = n % 100;
+  if (n === 1) return 'praca';
+  if (r10 >= 2 && r10 <= 4 && (r100 < 12 || r100 > 14)) return 'prace';
+  return 'prac';
+};
+---
+
+<Layout
+  title={jestObrazy ? 'Galeria – Obrazy' : 'Galeria – Aranżacje'}
+  description={jestObrazy
+    ? 'Galeria obrazów Karoliny Chrobot – malarstwo olejne, akrylowe, akwarele, rysunek.'
+    : 'Aranżacje – obrazy Karoliny Chrobot we wnętrzach.'}
+>
+  <section class="container head">
+    <p class="eyebrow" data-reveal>Galeria</p>
+
+    <nav class="switch" aria-label="Kategorie galerii" data-reveal style="--delay:80ms">
+      <a href="/galeria/" aria-current={jestObrazy ? 'page' : undefined}>Obrazy</a>
+      <span class="or" aria-hidden="true">LUB</span>
+      <a href="/galeria/aranzacje/" aria-current={!jestObrazy ? 'page' : undefined}>Aranżacje</a>
+      <span class={`indicator ${jestObrazy ? 'left' : 'right'}`} transition:name="galeria-indicator" aria-hidden="true"
+      ></span>
+    </nav>
+
+    <p class="count" data-reveal style="--delay:160ms">
+      <strong>{prace.length}</strong>{` ${liczba(prace.length)}`}
+    </p>
+  </section>
+
+  <section class="container grid" transition:animate="slide">
+    <Galeria
+      prace={prace}
+      id={zbior}
+      alt={jestObrazy ? 'obraz Karoliny Chrobot' : 'aranżacja – obraz Karoliny Chrobot we wnętrzu'}
+    />
+  </section>
+</Layout>
+
+<style>
+  .head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: clamp(24px, 5vw, 64px);
+    padding-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .switch {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: min(100%, 460px);
+    padding: 6px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: var(--shadow);
+  }
+
+  .switch a {
+    position: relative;
+    z-index: 1;
+    padding: 0.85rem 1rem;
+    text-align: center;
+    text-decoration: none;
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 1rem + 0.8vw, 1.5rem);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    transition: color 0.4s var(--ease);
+  }
+
+  .switch a[aria-current='page'] {
+    color: #fff;
+  }
+
+  .switch a:not([aria-current]):hover {
+    color: var(--ink);
+  }
+
+  .or {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+
+  .indicator {
+    position: absolute;
+    top: 6px;
+    bottom: 6px;
+    width: calc(50% - 6px);
+    border-radius: 999px;
+    background: linear-gradient(120deg, var(--violet), var(--blue));
+    box-shadow: 0 8px 20px -8px rgb(58 155 224 / 70%);
+  }
+
+  .indicator.left {
+    left: 6px;
+  }
+
+  .indicator.right {
+    right: 6px;
+    background: linear-gradient(120deg, var(--blue), var(--green));
+  }
+
+  .count {
+    margin: 1.4rem 0 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+
+  .count strong {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .grid {
+    padding-bottom: clamp(32px, 6vw, 80px);
+  }
+</style>
