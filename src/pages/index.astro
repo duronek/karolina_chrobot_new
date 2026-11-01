@@ -44,17 +44,6 @@ const imie = 'Karolina Chrobot';
         </div>
         <span class="splash s1" aria-hidden="true"></span>
         <span class="splash s2" aria-hidden="true"></span>
-        <svg class="sticker" viewBox="0 0 120 120" aria-hidden="true">
-          <defs><path id="krag" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"></path></defs>
-          <circle cx="60" cy="60" r="58"></circle>
-          <text><textPath href="#krag" textLength="272" lengthAdjust="spacing">malarstwo • rysunek • akwarela • ceramika •</textPath></text>
-          <g class="drops">
-            <circle cx="52" cy="55" r="7" fill="var(--red)"></circle>
-            <circle cx="68" cy="55" r="7" fill="var(--yellow)"></circle>
-            <circle cx="52" cy="70" r="7" fill="var(--blue)"></circle>
-            <circle cx="68" cy="70" r="7" fill="var(--green)"></circle>
-          </g>
-        </svg>
       </figure>
 
       <div class="intro">
@@ -358,77 +347,6 @@ const imie = 'Karolina Chrobot';
 
   .portrait:hover .frame {
     --tilt-base: 0deg;
-  }
-
-  /* Obracająca się naklejka z technikami */
-  .sticker {
-    position: absolute;
-    z-index: 2;
-    right: -9%;
-    bottom: 8%;
-    width: clamp(92px, 11vw, 124px);
-    overflow: visible;
-    filter: drop-shadow(0 10px 18px rgb(38 35 31 / 22%));
-    pointer-events: none;
-  }
-
-  .sticker > circle {
-    fill: var(--ink);
-  }
-
-  .sticker text {
-    fill: var(--paper);
-    font-family: var(--sans);
-    font-size: 9.6px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .sticker text {
-      transform-origin: 60px 60px;
-      animation: spin 18s linear infinite;
-    }
-
-    .portrait:hover .sticker text {
-      animation-duration: 5s;
-    }
-
-    .drops circle {
-      transform-box: fill-box;
-      transform-origin: center;
-      animation: drop 2.4s var(--ease) infinite;
-    }
-
-    .drops circle:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .drops circle:nth-child(3) {
-      animation-delay: 0.45s;
-    }
-
-    .drops circle:nth-child(4) {
-      animation-delay: 0.3s;
-    }
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes drop {
-    0%,
-    60%,
-    100% {
-      transform: scale(1);
-    }
-    30% {
-      transform: scale(0.6);
-    }
   }
 
   .frame img {
