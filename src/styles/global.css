@@ -178,6 +178,87 @@ p {
   white-space: nowrap;
 }
 
+/* Faktura papieru akwarelowego pod całą treścią */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Przechylanie 3D (src/components/Efekty.astro ustawia --rx/--ry/--px/--py).
+ * :where() – zerowa specyficzność, by komponent mógł dodać własny obrót przez --tilt-base.
+ */
+:where([data-tilt]) {
+  --rx: 0deg;
+  --ry: 0deg;
+  --px: 50%;
+  --py: 50%;
+  transform: perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) rotate(var(--tilt-base, 0deg))
+    scale(var(--tilt-scale, 1));
+  transition: transform 0.7s var(--ease);
+  will-change: transform;
+}
+
+:where([data-tilt].is-tilting) {
+  --tilt-scale: 1.02;
+  transition-duration: 0.2s;
+}
+
+.sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--px) var(--py), rgb(255 255 255 / 55%), transparent 55%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+.is-tilting > .sheen {
+  opacity: 1;
+}
+
+[data-magnetic] {
+  transition:
+    translate 0.5s var(--ease),
+    transform 0.4s var(--ease),
+    box-shadow 0.4s var(--ease);
+}
+
+/* Przejście między stronami: nowa strona „zamalowywana” pociągnięciem pędzla od lewej */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: vt-out 0.45s var(--ease) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: vt-in 0.8s var(--ease) both;
+  }
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0.4;
+    transform: scale(0.985);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    clip-path: polygon(0 0, 0 0, -12% 100%, 0 100%);
+  }
+  to {
+    clip-path: polygon(0 0, 112% 0, 100% 100%, 0 100%);
+  }
+}
+
 /* Animacje pojawiania się przy przewijaniu (tylko gdy działa JS i ruch jest dozwolony) */
 @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
   [data-reveal] {

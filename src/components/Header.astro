@@ -12,7 +12,7 @@ const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
-<header class="header">
+<header class="header" transition:name="naglowek">
   <div class="container bar">
     <a href="/" class="logo" aria-label="Karolina Chrobot – Strona Główna">
       <Image src={logo} alt="Karolina Chrobot" width={260} densities={[1, 2]} loading="eager" />

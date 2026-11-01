@@ -32,7 +32,7 @@ const imie = 'Karolina Chrobot';
 
     <div class="container hero-grid">
       <figure class="portrait" data-reveal="left">
-        <div class="frame">
+        <div class="frame" data-tilt>
           <Image
             src={karolina}
             alt="Karolina Chrobot"
@@ -44,6 +44,17 @@ const imie = 'Karolina Chrobot';
         </div>
         <span class="splash s1" aria-hidden="true"></span>
         <span class="splash s2" aria-hidden="true"></span>
+        <svg class="sticker" viewBox="0 0 120 120" aria-hidden="true">
+          <defs><path id="krag" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"></path></defs>
+          <circle cx="60" cy="60" r="58"></circle>
+          <text><textPath href="#krag" textLength="272" lengthAdjust="spacing">malarstwo • rysunek • akwarela • ceramika •</textPath></text>
+          <g class="drops">
+            <circle cx="52" cy="55" r="7" fill="var(--red)"></circle>
+            <circle cx="68" cy="55" r="7" fill="var(--yellow)"></circle>
+            <circle cx="52" cy="70" r="7" fill="var(--blue)"></circle>
+            <circle cx="68" cy="70" r="7" fill="var(--green)"></circle>
+          </g>
+        </svg>
       </figure>
 
       <div class="intro">
@@ -96,7 +107,7 @@ const imie = 'Karolina Chrobot';
         <h2>Przeglądaj moje obrazy</h2>
         <Pedzel kolor="var(--blue)" />
         <p class="lead">Zobacz moje dzieła posegregowane według kategorii.</p>
-        <a href="/galeria/" class="btn">
+        <a href="/galeria/" class="btn" data-magnetic>
           Galeria
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"
             ><path
@@ -110,7 +121,8 @@ const imie = 'Karolina Chrobot';
         </a>
       </div>
 
-      <a href="/galeria/" class="promo" data-reveal="zoom" aria-label="Kobieta – Malarstwo olejne. Przejdź do galerii">
+      <div data-reveal="zoom">
+      <a href="/galeria/" class="promo" data-tilt aria-label="Kobieta – Malarstwo olejne. Przejdź do galerii">
         <div class="slides" data-slides>
           {
             slajdy.map((s, i) => (
@@ -134,12 +146,13 @@ const imie = 'Karolina Chrobot';
           {slajdy.map((_, i) => <span class={i === 0 ? 'active' : undefined} />)}
         </div>
       </a>
+      </div>
     </div>
   </section>
 
   <!-- NAJNOWSZE PRACE – przesuwający się pas -->
   <section class="latest" aria-label="Najnowsze prace">
-    <div class="marquee">
+    <div class="marquee" data-marquee>
       {
         [0, 1].map((k) => (
           <ul class="track" aria-hidden={k === 1 ? 'true' : undefined}>
@@ -184,6 +197,48 @@ const imie = 'Karolina Chrobot';
       dots[n]?.classList.add('active');
     }, 5000);
   });
+
+  // Pas najnowszych prac: płynie stale, a przy przewijaniu przyspiesza, zmienia kierunek
+  // zgodnie z kierunkiem przewijania i lekko się pochyla.
+  let rafPas = 0;
+  document.addEventListener('astro:page-load', () => {
+    cancelAnimationFrame(rafPas);
+    const pas = document.querySelector<HTMLElement>('[data-marquee]');
+    if (!pas || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    pas.style.animation = 'none';
+
+    const BAZA = 40; // px/s
+    let x = 0;
+    let kierunek = 1;
+    let predkosc = 0; // wygładzona prędkość przewijania
+    let hamulec = 1;
+    let ostatnieY = scrollY;
+    let ostatniCzas = performance.now();
+    const sekcja = pas.parentElement!;
+    let nadPasem = false;
+    sekcja.onpointerenter = () => (nadPasem = true);
+    sekcja.onpointerleave = () => (nadPasem = false);
+
+    const krok = (t: number) => {
+      const dt = Math.min(0.05, (t - ostatniCzas) / 1000);
+      ostatniCzas = t;
+      const dy = scrollY - ostatnieY;
+      ostatnieY = scrollY;
+      if (dy) kierunek = Math.sign(dy);
+      predkosc += (Math.abs(dy) / Math.max(dt, 0.001) - predkosc) * 0.1;
+      hamulec += ((nadPasem ? 0 : 1) - hamulec) * 0.08;
+
+      const polowa = pas.scrollWidth / 2;
+      x -= kierunek * (BAZA + predkosc * 0.6) * dt * hamulec;
+      if (x <= -polowa) x += polowa;
+      if (x > 0) x -= polowa;
+      const skos = Math.max(-8, Math.min(8, kierunek * predkosc * 0.004));
+      pas.style.transform = `translate3d(${x}px,0,0) skewX(${-skos}deg)`;
+      rafPas = requestAnimationFrame(krok);
+    };
+    rafPas = requestAnimationFrame(krok);
+  });
+  document.addEventListener('astro:before-swap', () => cancelAnimationFrame(rafPas));
 </script>
 
 <style>
@@ -200,6 +255,24 @@ const imie = 'Karolina Chrobot';
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* Plamy farby odpływają wolniej niż treść – głębia przy przewijaniu */
+      .blobs {
+        animation: blobs-parallax linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 100vh;
+      }
+    }
+  }
+
+  @keyframes blobs-parallax {
+    to {
+      transform: translateY(18vh) scale(1.1);
+      opacity: 0.6;
+    }
   }
 
   .blobs span {
@@ -280,12 +353,82 @@ const imie = 'Karolina Chrobot';
     background: var(--frame);
     border-radius: 6px;
     box-shadow: var(--shadow-lg);
-    transform: rotate(-2deg);
-    transition: transform 0.8s var(--ease);
+    --tilt-base: -2deg;
   }
 
   .portrait:hover .frame {
-    transform: rotate(0deg) scale(1.01);
+    --tilt-base: 0deg;
+  }
+
+  /* Obracająca się naklejka z technikami */
+  .sticker {
+    position: absolute;
+    z-index: 2;
+    right: -9%;
+    bottom: 8%;
+    width: clamp(92px, 11vw, 124px);
+    overflow: visible;
+    filter: drop-shadow(0 10px 18px rgb(38 35 31 / 22%));
+    pointer-events: none;
+  }
+
+  .sticker > circle {
+    fill: var(--ink);
+  }
+
+  .sticker text {
+    fill: var(--paper);
+    font-family: var(--sans);
+    font-size: 9.6px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .sticker text {
+      transform-origin: 60px 60px;
+      animation: spin 18s linear infinite;
+    }
+
+    .portrait:hover .sticker text {
+      animation-duration: 5s;
+    }
+
+    .drops circle {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: drop 2.4s var(--ease) infinite;
+    }
+
+    .drops circle:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .drops circle:nth-child(3) {
+      animation-delay: 0.45s;
+    }
+
+    .drops circle:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes drop {
+    0%,
+    60%,
+    100% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(0.6);
+    }
   }
 
   .frame img {
@@ -344,6 +487,38 @@ const imie = 'Karolina Chrobot';
   .ch {
     display: inline-block;
     white-space: nowrap;
+  }
+
+  /* Litery imienia „nabierają farby” po najechaniu – każda w innym kolorze */
+  .ch {
+    --c: var(--red);
+    transition:
+      color 0.35s var(--ease),
+      translate 0.5s var(--ease),
+      rotate 0.5s var(--ease);
+  }
+
+  .ch:nth-child(5n + 2) {
+    --c: var(--yellow);
+  }
+
+  .ch:nth-child(5n + 3) {
+    --c: var(--green);
+  }
+
+  .ch:nth-child(5n + 4) {
+    --c: var(--blue);
+  }
+
+  .ch:nth-child(5n + 5) {
+    --c: var(--violet);
+  }
+
+  .ch:hover {
+    color: var(--c);
+    translate: 0 -0.12em;
+    rotate: -6deg;
+    transition-duration: 0.15s;
   }
 
   @media (prefers-reduced-motion: no-preference) {

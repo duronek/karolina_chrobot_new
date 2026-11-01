@@ -16,9 +16,11 @@ const dyplomy = getPrace('dyplomy');
 >
   <!-- O MNIE -->
   <section class="container about">
-    <figure class="portrait" data-reveal="left">
-      <Image src={karolina} alt="Karolina Chrobot" widths={[360, 540, 720, 1080]} sizes="(max-width: 900px) 80vw, 400px" loading="eager" />
-    </figure>
+    <div class="portrait-wrap" data-reveal="left">
+      <figure class="portrait" data-tilt>
+        <Image src={karolina} alt="Karolina Chrobot" widths={[360, 540, 720, 1080]} sizes="(max-width: 900px) 80vw, 400px" loading="eager" />
+      </figure>
+    </div>
 
     <div class="about-text">
       <p class="eyebrow" data-reveal>O mnie</p>
@@ -124,15 +126,23 @@ const dyplomy = getPrace('dyplomy');
     padding-block: clamp(24px, 5vw, 72px) clamp(40px, 6vw, 80px);
   }
 
-  .portrait {
-    margin: 0;
+  .portrait-wrap {
     position: sticky;
     top: 110px;
+  }
+
+  .portrait {
+    margin: 0;
+    position: relative;
     padding: 12px;
     background: var(--frame);
     border-radius: 6px;
     box-shadow: var(--shadow-lg);
-    rotate: 1.5deg;
+    --tilt-base: 1.5deg;
+  }
+
+  .portrait:hover {
+    --tilt-base: 0deg;
   }
 
   .portrait::before {
@@ -271,6 +281,20 @@ const dyplomy = getPrace('dyplomy');
     transform: translateX(6px);
   }
 
+  .contact-text li:nth-child(1) svg {
+    --c: var(--blue);
+  }
+
+  .contact-text li:nth-child(2) svg {
+    --c: var(--green);
+  }
+
+  .contact-text a:hover svg {
+    background: var(--c);
+    rotate: -12deg;
+    scale: 1.08;
+  }
+
   .contact-text svg {
     flex: none;
     padding: 9px;
@@ -278,6 +302,10 @@ const dyplomy = getPrace('dyplomy');
     height: 42px;
     border-radius: 50%;
     background: var(--ink);
+    transition:
+      background 0.3s,
+      rotate 0.5s var(--ease),
+      scale 0.5s var(--ease);
     fill: none;
     stroke: var(--paper);
     stroke-width: 1.8;
@@ -291,7 +319,7 @@ const dyplomy = getPrace('dyplomy');
       grid-template-columns: 1fr;
     }
 
-    .portrait {
+    .portrait-wrap {
       position: relative;
       top: 0;
       width: min(80%, 380px);

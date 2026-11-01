@@ -3,8 +3,8 @@ const rok = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <div class="paint" aria-hidden="true">
-    <span></span><span></span><span></span><span></span><span></span>
+  <div class="paint" aria-hidden="true" data-reveal>
+    <span style="--n:0"></span><span style="--n:1"></span><span style="--n:2"></span><span style="--n:3"></span><span style="--n:4"></span>
   </div>
   <div class="container inner">
     <p>| Wszelkie prawa zastrzeżone © 2023{rok > 2023 ? `–${rok}` : ''} |</p>
@@ -26,6 +26,68 @@ const rok = new Date().getFullYear();
 
   .paint span {
     flex: 1;
+    position: relative;
+    transform-origin: left;
+  }
+
+  /* Zacieki farby spływające ze stopki */
+  .paint span::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: var(--x, 40%);
+    width: 9px;
+    height: var(--h, 18px);
+    border-radius: 0 0 9px 9px;
+    background: inherit;
+    transform-origin: top;
+  }
+
+  .paint span:nth-child(1) {
+    --x: 62%;
+    --h: 22px;
+  }
+
+  .paint span:nth-child(2) {
+    --x: 20%;
+    --h: 12px;
+  }
+
+  .paint span:nth-child(3) {
+    --x: 74%;
+    --h: 30px;
+  }
+
+  .paint span:nth-child(4) {
+    --x: 35%;
+    --h: 16px;
+  }
+
+  .paint span:nth-child(5) {
+    --x: 55%;
+    --h: 24px;
+  }
+
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .paint[data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+
+    .paint span {
+      transform: scaleX(0);
+      transition: transform 0.9s var(--ease) calc(var(--n) * 0.12s);
+    }
+
+    .paint span::after {
+      transform: scaleY(0);
+      transition: transform 1.4s cubic-bezier(0.5, 0, 0.2, 1) calc(0.6s + var(--n) * 0.12s);
+    }
+
+    .paint:global(.is-visible) span,
+    .paint:global(.is-visible) span::after {
+      transform: none;
+    }
   }
 
   .paint span:nth-child(1) {
