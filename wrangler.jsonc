@@ -1,11 +1,5 @@
-// Konfiguracja wdrożenia na Cloudflare Workers (statyczna strona z folderu dist/).
-// Cloudflare: Build command = "npm run build", Deploy command = "npx wrangler deploy".
+// Konfiguracja wdrożenia na Cloudflare Pages
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "karolina-chrobot-new",
-  "compatibility_date": "2026-10-01",
-  "assets": {
-    "directory": "./dist",
-    "not_found_handling": "404-page"
-  }
+  "name": "karolina-chrobot",
+  "pages_build_output_dir": "./dist"
 }
