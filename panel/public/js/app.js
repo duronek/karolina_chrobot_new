@@ -109,6 +109,10 @@ const createAppController = (api, toast) => {
   let przefiltrowanePrace = [];
   let filtrTekst = '';
 
+  // Stan paginacji
+  let stronaAktualna = 1;
+  let naStrone = 25;
+
   let pracaDoEdycji = null;
   let pracaDoUsuniecia = null;
   let dragSrcIndex = null;
@@ -157,9 +161,41 @@ const createAppController = (api, toast) => {
   };
 
   /**
+   * Aktualizuje liczniki w nagłówku oraz tytuł kategorii.
+   */
+  const aktualizujLiczniki = () => {
+    const lacznie = listaPrac.length;
+    const wyroznione = listaPrac.filter((p) => p.wyrozniony).length;
+    const ukryte = listaPrac.filter((p) => p.ukryty).length;
+
+    if (elLicznikWszystkich) elLicznikWszystkich.textContent = lacznie;
+    if (elLicznikWyroznionych) elLicznikWyroznionych.textContent = wyroznione;
+    if (elLicznikUkrytych) elLicznikUkrytych.textContent = ukryte;
+
+    const ikony = {
+      obrazy: 'fa-paintbrush text-primary',
+      aranzacje: 'fa-couch text-success',
+      dyplomy: 'fa-award text-warning'
+    };
+    const nazwy = {
+      obrazy: 'Obrazy',
+      aranzacje: 'Aranżacje',
+      dyplomy: 'Dyplomy i Nagrody'
+    };
+
+    if (elNaglowekKategorii) {
+      elNaglowekKategorii.innerHTML = `<i class="fa-solid ${ikony[aktualnaKategoria] || 'fa-folder'}"></i> ${nazwy[aktualnaKategoria] || aktualnaKategoria}`;
+    }
+  };
+
+  /**
    * Filtruje listę prac na podstawie wpisanego tekstu w wyszukiwarce.
    */
-  const zastosujFiltr = () => {
+  const zastosujFiltr = (resetujStrone = true) => {
+    if (resetujStrone) {
+      stronaAktualna = 1;
+    }
+
     if (!filtrTekst.trim()) {
       przefiltrowanePrace = [...listaPrac];
     } else {
@@ -181,38 +217,163 @@ const createAppController = (api, toast) => {
   };
 
   /**
-   * Aktualizuje liczniki w nagłówku.
+   * Oblicza parametry paginacji dla przefiltrowanych prac.
    */
-  const aktualizujLiczniki = () => {
-    const lacznie = listaPrac.length;
-    const wyroznione = listaPrac.filter((p) => p.wyrozniony).length;
-    const ukryte = listaPrac.filter((p) => p.ukryty).length;
+  const getPaginacjaInfo = () => {
+    const lacznie = przefiltrowanePrace.length;
+    const perPage = naStrone === 'all' ? (lacznie || 1) : Number(naStrone);
+    const lacznieStron = Math.max(1, Math.ceil(lacznie / perPage));
+    const aktywnaStrona = Math.min(Math.max(1, stronaAktualna), lacznieStron);
+    const poczatek = (aktywnaStrona - 1) * perPage;
+    const koniec = naStrone === 'all' ? lacznie : Math.min(poczatek + perPage, lacznie);
+    const praceNaStronie = przefiltrowanePrace.slice(poczatek, koniec);
 
-    elLicznikWszystkich.textContent = lacznie;
-    elLicznikWyroznionych.textContent = wyroznione;
-    elLicznikUkrytych.textContent = ukryte;
-
-    const ikony = {
-      obrazy: 'fa-paintbrush text-primary',
-      aranzacje: 'fa-couch text-success',
-      dyplomy: 'fa-award text-warning'
-    };
-    const nazwy = {
-      obrazy: 'Obrazy',
-      aranzacje: 'Aranżacje',
-      dyplomy: 'Dyplomy i Nagrody'
-    };
-
-    elNaglowekKategorii.innerHTML = `<i class="fa-solid ${ikony[aktualnaKategoria] || 'fa-folder'}"></i> ${nazwy[aktualnaKategoria] || aktualnaKategoria}`;
+    return Object.freeze({
+      lacznie,
+      perPage,
+      lacznieStron,
+      aktywnaStrona,
+      poczatek,
+      koniec,
+      praceNaStronie
+    });
   };
 
   /**
-   * Renderuje karty prac w kontenerze flexbox.
+   * Generuje przyciski numeryczne paginacji.
+   */
+  const generujPrzyciskiStron = (ulElement, info) => {
+    ulElement.innerHTML = '';
+    if (naStrone === 'all' || info.lacznieStron <= 1) {
+      return;
+    }
+
+    const { lacznieStron, aktywnaStrona } = info;
+
+    // Przycisk "Pierwsza" («)
+    const liFirst = document.createElement('li');
+    liFirst.className = `page-item ${aktywnaStrona === 1 ? 'disabled' : ''}`;
+    liFirst.innerHTML = `<button type="button" class="page-link" title="Pierwsza strona">&laquo;</button>`;
+    if (aktywnaStrona > 1) {
+      liFirst.querySelector('button').addEventListener('click', () => zmienStrone(1));
+    }
+    ulElement.appendChild(liFirst);
+
+    // Przycisk "Poprzednia" (‹)
+    const liPrev = document.createElement('li');
+    liPrev.className = `page-item ${aktywnaStrona === 1 ? 'disabled' : ''}`;
+    liPrev.innerHTML = `<button type="button" class="page-link" title="Poprzednia strona">&lsaquo;</button>`;
+    if (aktywnaStrona > 1) {
+      liPrev.querySelector('button').addEventListener('click', () => zmienStrone(aktywnaStrona - 1));
+    }
+    ulElement.appendChild(liPrev);
+
+    // Wyznaczenie numerów stron do pokazania (z wielokropkiem)
+    const stronyDoPokazania = [];
+    const margines = 2;
+
+    for (let i = 1; i <= lacznieStron; i++) {
+      if (i === 1 || i === lacznieStron || (i >= aktywnaStrona - margines && i <= aktywnaStrona + margines)) {
+        stronyDoPokazania.push(i);
+      }
+    }
+
+    let poprzedniNumer = 0;
+    stronyDoPokazania.forEach((nr) => {
+      if (poprzedniNumer > 0 && nr - poprzedniNumer > 1) {
+        const liDots = document.createElement('li');
+        liDots.className = 'page-item disabled';
+        liDots.innerHTML = `<span class="page-link">&hellip;</span>`;
+        ulElement.appendChild(liDots);
+      }
+
+      const liNr = document.createElement('li');
+      liNr.className = `page-item ${nr === aktywnaStrona ? 'active' : ''}`;
+      liNr.innerHTML = `<button type="button" class="page-link">${nr}</button>`;
+      if (nr !== aktywnaStrona) {
+        liNr.querySelector('button').addEventListener('click', () => zmienStrone(nr));
+      }
+      ulElement.appendChild(liNr);
+
+      poprzedniNumer = nr;
+    });
+
+    // Przycisk "Następna" (›)
+    const liNext = document.createElement('li');
+    liNext.className = `page-item ${aktywnaStrona === lacznieStron ? 'disabled' : ''}`;
+    liNext.innerHTML = `<button type="button" class="page-link" title="Następna strona">&rsaquo;</button>`;
+    if (aktywnaStrona < lacznieStron) {
+      liNext.querySelector('button').addEventListener('click', () => zmienStrone(aktywnaStrona + 1));
+    }
+    ulElement.appendChild(liNext);
+
+    // Przycisk "Ostatnia" (»)
+    const liLast = document.createElement('li');
+    liLast.className = `page-item ${aktywnaStrona === lacznieStron ? 'disabled' : ''}`;
+    liLast.innerHTML = `<button type="button" class="page-link" title="Ostatnia strona">&raquo;</button>`;
+    if (aktywnaStrona < lacznieStron) {
+      liLast.querySelector('button').addEventListener('click', () => zmienStrone(lacznieStron));
+    }
+    ulElement.appendChild(liLast);
+  };
+
+  /**
+   * Aktualizuje pasek górny i dolny paginacji.
+   */
+  const aktualizujPaginacjeUI = (info) => {
+    const elPasekGora = document.getElementById('pasekPaginacjiGora');
+    const elPasekDol = document.getElementById('pasekPaginacjiDol');
+    const elTekstGora = document.getElementById('tekstPaginacjiInfoGora');
+    const elTekstDol = document.getElementById('tekstPaginacjiInfoDol');
+    const elUlGora = document.getElementById('paginacjaGoraUl');
+    const elUlDol = document.getElementById('paginacjaDolUl');
+
+    if (info.lacznie === 0) {
+      if (elPasekGora) elPasekGora.classList.add('d-none');
+      if (elPasekDol) elPasekDol.classList.add('d-none');
+      return;
+    }
+
+    if (elPasekGora) elPasekGora.classList.remove('d-none');
+    if (elPasekDol) elPasekDol.classList.remove('d-none');
+
+    if (elTekstGora) {
+      elTekstGora.innerHTML = `Wyświetlono <strong>${info.poczatek + 1}–${info.koniec}</strong> z <strong>${info.lacznie}</strong> prac`;
+    }
+    if (elTekstDol) {
+      elTekstDol.innerHTML = `Strona <strong>${info.aktywnaStrona}</strong> z <strong>${info.lacznieStron}</strong> (${info.lacznie} prac łącznie)`;
+    }
+
+    if (elUlGora) generujPrzyciskiStron(elUlGora, info);
+    if (elUlDol) generujPrzyciskiStron(elUlDol, info);
+  };
+
+  /**
+   * Zmienia aktywną stronę paginacji i przewija widok.
+   */
+  const zmienStrone = (nowyNumer) => {
+    stronaAktualna = nowyNumer;
+    renderujListe();
+    if (elLista) {
+      elLista.scrollTop = 0;
+    }
+    const toolbar = document.getElementById('toolbar') || document.getElementById('naglowekKategorii');
+    if (toolbar) {
+      toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  /**
+   * Renderuje karty prac w kontenerze flexbox z uwzględnieniem paginacji.
    */
   const renderujListe = () => {
     elLista.innerHTML = '';
 
-    if (przefiltrowanePrace.length === 0) {
+    const paginacja = getPaginacjaInfo();
+    stronaAktualna = paginacja.aktywnaStrona;
+    aktualizujPaginacjeUI(paginacja);
+
+    if (paginacja.lacznie === 0) {
       elBrakWynikow.classList.remove('d-none');
       return;
     }
@@ -220,8 +381,8 @@ const createAppController = (api, toast) => {
     elBrakWynikow.classList.add('d-none');
     const czyJestFiltr = filtrTekst.trim().length > 0;
 
-    przefiltrowanePrace.forEach((praca, idx) => {
-      // Indeks w pełnej liście (ważny dla kolejności)
+    paginacja.praceNaStronie.forEach((praca) => {
+      // Indeks globalny w pełnej liście (ważny dla kolejności)
       const indexWList = listaPrac.findIndex((p) => p.zdjecie === praca.zdjecie);
 
       const karta = document.createElement('div');
@@ -359,7 +520,13 @@ const createAppController = (api, toast) => {
     const [przenoszona] = listaPrac.splice(staryIndex, 1);
     listaPrac.splice(nowyIndex, 0, przenoszona);
 
-    zastosujFiltr();
+    // Zaktualizuj stronę tak, aby podążała za przeniesionym elementem
+    if (naStrone !== 'all') {
+      const perPage = Number(naStrone);
+      stronaAktualna = Math.floor(nowyIndex / perPage) + 1;
+    }
+
+    zastosujFiltr(false);
 
     // Zapisz na serwerze
     const tablicaZdjec = listaPrac.map((p) => p.zdjecie);
@@ -422,10 +589,21 @@ const createAppController = (api, toast) => {
       btn.classList.add('active');
 
       aktualnaKategoria = btn.dataset.kat;
+      stronaAktualna = 1;
       filtrTekst = '';
       elInputSzukaj.value = '';
       wczytajDane();
     });
+
+    // Zmiana liczby elementów na stronę (Paginacja)
+    const selectNaStrone = document.getElementById('selectNaStrone');
+    if (selectNaStrone) {
+      selectNaStrone.addEventListener('change', (e) => {
+        naStrone = e.target.value;
+        stronaAktualna = 1;
+        renderujListe();
+      });
+    }
 
     // Wyszukiwarka
     elInputSzukaj.addEventListener('input', (e) => {

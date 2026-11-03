@@ -13,6 +13,13 @@ body {
   color: #333333;
 }
 
+#toolbar {
+  position: sticky;
+  top: 56px;
+  z-index: 100;
+  background-color: #ffffff;
+}
+
 /* Typografia pomocnicza */
 .fs-7 {
   font-size: 0.875rem;
@@ -20,6 +27,35 @@ body {
 
 .fs-8 {
   font-size: 0.8rem;
+}
+
+/* Paginacja - FLEXBOX */
+.pagination {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2px;
+}
+
+.pagination .page-link {
+  color: var(--primary-color);
+  border-radius: 0.375rem;
+  border-color: var(--border-color);
+  padding: 0.25rem 0.55rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pagination .page-link:hover {
+  background-color: #e9ecef;
+  color: var(--primary-color);
 }
 
 /* Wskaźnik statusu serwera podglądu */
@@ -39,16 +75,49 @@ body {
 }
 
 @keyframes pulseGreen {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
-/* Kontener listy prac - FLEXBOX */
+/* Kontener listy prac - FLEXBOX z overflow: auto */
 .lista-prac-kontener {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  max-height: calc(100vh - 260px);
+  min-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  border-radius: 0.375rem;
+}
+
+/* Stylowy pasek przewijania dla kontenera listy prac */
+.lista-prac-kontener::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lista-prac-kontener::-webkit-scrollbar-track {
+  background: #f1f3f5;
+  border-radius: 4px;
+}
+
+.lista-prac-kontener::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+
+.lista-prac-kontener::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
 }
 
 /* Karta pojedynczej pracy - FLEXBOX */
@@ -61,13 +130,14 @@ body {
   background-color: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   user-select: none;
 }
 
 .praca-karta:hover {
-  box-shadow: var(--card-hover-shadow);
-  border-color: #adb5bd;
+  box-shadow: 0px 0px 7px 1px rgb(0 0 0 / 31%) !important;
+  border-color: #5c9dde;
+  transform: translateX(2px);
 }
 
 .praca-karta.ukryta {
@@ -253,4 +323,3 @@ body {
     padding-top: 0.5rem;
   }
 }
-

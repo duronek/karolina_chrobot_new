@@ -17,7 +17,7 @@
 
   <!-- GŁÓWNY PASEK NAWIGACJI -->
   <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
-    <div class="container px-3 px-lg-4 d-flex justify-content-between align-items-center">
+    <div class="container-fluid px-3 px-lg-4 d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-3">
         <a class="navbar-brand d-flex align-items-center gap-2 mb-0" href="#">
           <i class="fa-solid fa-palette text-warning"></i>
@@ -66,11 +66,11 @@
     </div>
   </header>
 
-  <!-- PASEK NARZĘDZI I WYSZUKIWARKA -->
-  <div class="bg-white border-bottom shadow-sm py-3 mb-4">
-    <div class="container-fluid px-3 px-lg-4">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-        <!-- Liczniki i tytuł sekcji -->
+  <!-- PASEK NARZĘDZI, FILTRY I PAGINACJA GÓRNA (STICKY) -->
+  <div id="toolbar" class="bg-white border-bottom shadow-sm py-2 mb-3">
+    <div class="container-fluid px-3 px-lg-4 d-flex flex-column gap-2">
+      <!-- Wiersz 1: Liczniki, kategoria, szukajka -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div class="d-flex align-items-center gap-3 flex-wrap">
           <h1 class="h4 mb-0 fw-bold text-dark d-flex align-items-center gap-2" id="naglowekKategorii">
             <i class="fa-solid fa-paintbrush text-primary"></i> Obrazy
@@ -90,8 +90,8 @@
 
         <!-- Wyszukiwarka i filtr -->
         <div class="d-flex align-items-center gap-2 flex-grow-1 flex-md-grow-0"
-          style="min-width: 280px; max-width: 450px;">
-          <div class="input-group">
+          style="min-width: 260px; max-width: 420px;">
+          <div class="input-group input-group-sm">
             <span class="input-group-text bg-light border-end-0">
               <i class="fa-solid fa-magnifying-glass text-muted"></i>
             </span>
@@ -104,21 +104,46 @@
         </div>
       </div>
 
-      <!-- Wskazówka o kolejności -->
-      <div class="alert alert-light border mt-3 mb-0 py-2 px-3 d-flex align-items-center gap-2 text-muted fs-8">
-        <i class="fa-solid fa-circle-info text-primary"></i>
-        <span>
-          <strong>Kolejność:</strong> Prace wyświetlane są dokładnie tak, jak w galerii na stronie (pozycja
-          <strong>#1</strong> to pierwsza praca na samej górze).
-          Użyj przycisków ze strzałkami lub przeciągaj za uchwyt <i class="fa-solid fa-grip-vertical"></i>, aby zmienić
-          układ.
-        </span>
+      <!-- Wiersz 2: Pasek paginacji górny (zawsze widoczny) -->
+      <div id="pasekPaginacjiGora"
+        class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top">
+        <div class="d-flex align-items-center gap-2 fs-7 text-muted">
+          <i class="fa-solid fa-list-ol text-primary"></i>
+          <span id="tekstPaginacjiInfoGora">Wyświetlanie prac...</span>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <div class="d-flex align-items-center gap-2 fs-7">
+            <label for="selectNaStrone" class="text-muted text-nowrap mb-0 fw-semibold">Na stronę:</label>
+            <select id="selectNaStrone" class="form-select form-select-sm" style="width: auto;">
+              <option value="25" selected>25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+              <option value="all">Wszystkie</option>
+            </select>
+          </div>
+          <nav aria-label="Nawigacja stron - góra">
+            <ul class="pagination pagination-sm mb-0" id="paginacjaGoraUl">
+              <!-- Dynamiczne przyciski stron -->
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- KONTENER GŁÓWNY Z LISTĄ PRAC -->
-  <main class="container-fluid px-3 px-lg-4 pb-5">
+  <main class="container px-3 px-lg-4 pb-4">
+    <!-- Wskazówka o kolejności -->
+    <div class="alert alert-light border mb-3 py-2 px-3 d-flex align-items-center gap-2 text-muted fs-8">
+      <i class="fa-solid fa-circle-info text-primary"></i>
+      <span>
+        <strong>Kolejność:</strong> Prace wyświetlane są dokładnie tak, jak w galerii na stronie (pozycja
+        <strong>#1</strong> to pierwsza praca na samej górze).
+        Użyj przycisków ze strzałkami lub przeciągaj za uchwyt <i class="fa-solid fa-grip-vertical"></i>, aby zmienić
+        układ.
+      </span>
+    </div>
+
     <!-- Spinner ładowania -->
     <div id="loader" class="d-flex justify-content-center align-items-center py-5">
       <div class="spinner-border text-primary" role="status">

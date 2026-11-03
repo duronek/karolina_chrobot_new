@@ -32,7 +32,9 @@ Po uruchomieniu otwórz przeglądarkę pod adresem:
 
 ## Główne funkcjonalności
 
-### 1. Przeglądanie i filtrowanie prac
+### 1. Przeglądanie, paginacja i filtrowanie prac
+- **Wygodna paginacja**: podział dużej liczby prac na strony (domyślnie 25 na stronę, z możliwością wyboru: 25, 50, 100 lub Wszystkie).
+- Paski nawigacji stron na górze i dole listy z szybkim przejściem (pierwsza, poprzednia, numery stron, następna, ostatnia).
 - Przełączanie kategorii prac w nagłówku (**Obrazy**, **Aranżacje**, **Dyplomy**).
 - Szybka wyszukiwarka po tytule, technice, wymiarach, roku lub nazwie pliku.
 - Wyświetlanie miniatur zdjęć, tytułów, techniki, wymiarów oraz statusów (**Wyróżniony na Głównej**, **Ukryty**).

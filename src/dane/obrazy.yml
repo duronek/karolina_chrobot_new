@@ -1,795 +1,491 @@
+# Lista prac: obrazy.
+# Kolejność chronologiczna: ostatnia pozycja wyświetla się na stronie jako pierwsza.
 - zdjecie: /src/tresci/obrazy/obraz-001.jpg
   tytul: Baran
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-002.jpg
   tytul: Latarnia z kwiatami
   technika: tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-003.jpg
   tytul: Magiczne Oko
   technika: węgiel na papierze
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-004.jpg
   tytul: Sęp
   technika: węgiel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-005.jpg
   tytul: Jesienny las
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-006.jpg
   tytul: Rozkwitająca myśl
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-007.jpg
   tytul: Skrzydlata
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-008.jpg
   tytul: Kobieta z różami
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-009.jpg
   tytul: Kwiaty myśli
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-010.jpg
   tytul: Martwa natura z pomarańczami
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-011.jpg
   tytul: Kolorowa twarz
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-012.jpg
   tytul: Dama w czepcu
   technika: pastel na papierze
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-013.jpg
   tytul: Odbicie lasu
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-014.jpg
   tytul: Martwa natura z dzbanem
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-015.jpg
   tytul: Latarnia morska z pelikanem
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-016.jpg
   tytul: Bukiet polnych kwiatów
   technika: olej na płótnie, technika szpachlowa
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-017.jpg
   tytul: Pomarańczowe kwiaty
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-018.jpg
   tytul: Chabry
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-019.jpg
   tytul: Frida
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-020.jpg
   tytul: Dama w kapeluszu
   technika: pastel na papierze
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-021.jpg
   tytul: Frida w kwiatach
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-022.jpg
   tytul: Żaglowiec o zachodzie słońca
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-023.jpg
   tytul: Bukiet w wazonie
   technika: olej na płótnie, technika szpachlowa
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-024.jpg
   tytul: Maki
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-025.jpg
   tytul: Twarz w barwach
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-026.jpg
   tytul: Niebieskie drzwi
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-027.jpg
   tytul: Fiołki w wazonie
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-028.jpg
   tytul: Zachód słońca nad wodą
   technika: pastele olejne na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-029.jpg
   tytul: Złote łzy
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-030.jpg
   tytul: Bukiet w szklanym wazonie
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-031.jpg
   tytul: Kobieta w kwiatach
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-032.jpg
   tytul: Czerwone róże
   technika: olej na płótnie, technika szpachlowa
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-033.jpg
   tytul: Polne kwiaty w niebieskim wazonie
   technika: olej na płótnie, technika szpachlowa
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-034.jpg
   tytul: Koń
   technika: pastel na czarnym papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-035.jpg
   tytul: Martwa natura z owocami i winem
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-036.jpg
   tytul: Flamenco
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-037.jpg
   tytul: Słonecznikowa
   technika: akryl na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-038.jpg
   tytul: Łąka z ulami
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-039.jpg
   tytul: Lisy
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-040.jpg
   tytul: Leśna nimfa
   technika: akryl na drewnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-041.jpg
   tytul: Matka z dzieckiem
   technika: akryl i złoto płatkowe na drewnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-042.jpg
   tytul: Anioł
   technika: akryl i złoto płatkowe na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-043.jpg
   tytul: Wiśnie
   technika: olej na płótnie
   wyrozniony: true
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-044.jpg
   tytul: Walka powstańcza
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-045.jpg
   tytul: Oko – początek życia
   technika: kredki na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-046.jpg
   tytul: Dawid
   technika: ceramika szkliwiona
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-047.jpg
   tytul: Portret starszego mężczyzny
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-048.jpg
   tytul: Zimowy zachód słońca
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-049.jpg
   tytul: Gwiaździsta noc
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-050.jpg
   tytul: Kobieta w różach
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-051.jpg
   tytul: Torreador
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-052.jpg
   tytul: Kobieta z kieliszkiem
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-053.jpg
   tytul: Projekty mody
   technika: technika mieszana na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-054.jpg
   tytul: Projekty mody II
   technika: technika mieszana na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-055.jpg
   tytul: Rozdarte wspomnienia
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-056.jpg
   tytul: Zimowa opowieść
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-057.jpg
   tytul: Jesienna droga
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-058.jpg
   tytul: Ośmiornica
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-059.jpg
   tytul: Jelonek rogacz
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-060.jpg
   tytul: Wieża Eiffla
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-061.jpg
   tytul: Handel ludźmi
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-062.jpg
   tytul: Frida z kolibrami
   technika: pastel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-063.jpg
   tytul: Portret duchownego
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-064.jpg
   tytul: Henryk Sienkiewicz
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-065.jpg
   tytul: Rozkwit
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-066.jpg
   tytul: Anioły
   technika: akryl i złoto płatkowe na deskach
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-067.jpg
   tytul: Zimowa opowieść II
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-068.jpg
   tytul: Scena biblijna
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-069.jpg
   tytul: Cicha noc
   technika: akryl na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-070.jpg
   tytul: Święty Mikołaj
   technika: akryl na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-071.jpg
   tytul: Ułani ze sztandarem
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-072.jpg
   tytul: Zimowe spotkanie
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-073.jpg
   tytul: Portret mężczyzny
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-074.jpg
   tytul: Piwonie
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-075.jpg
   tytul: Maki i róże
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-076.jpg
   tytul: Koń
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-077.jpg
   tytul: Dziewczynka przed lustrem
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-078.jpg
   tytul: Adam Mickiewicz
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-079.jpg
   tytul: Pandemia
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-080.jpg
   tytul: Zamyślona
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-081.jpg
   tytul: Para w strojach ludowych
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-082.jpg
   tytul: Anioły II
   technika: akryl i złoto płatkowe na deskach
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-083.jpg
   tytul: Anioł
   technika: akryl i złoto płatkowe na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-084.jpg
   tytul: Głowa
   technika: rzeźba w glinie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-085.jpg
   tytul: Trzy konie
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-086.jpg
   tytul: Koń w kolorach
   technika: pastel na czarnym papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-087.jpg
   tytul: Kobieta i piwonie
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-088.jpg
   tytul: Rozkwit
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-089.jpg
   tytul: Koń w kolorach II
   technika: pastel na czarnym papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-090.jpg
   tytul: Pałac
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-091.jpg
   tytul: Portret szlachcica
   technika: węgiel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-092.jpg
   tytul: Polne kwiaty
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-093.jpg
   tytul: Polne kwiaty II
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-094.jpg
   tytul: Astry
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-095.jpg
   tytul: Polne kwiaty III
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-096.jpg
   tytul: Ostróżki
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-097.jpg
   tytul: Anioł
   technika: akryl i złoto płatkowe na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-098.jpg
   tytul: Róże
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-099.jpg
   tytul: Kulig
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-100.jpg
   tytul: Śpiący anioł
   technika: akryl i złoto płatkowe na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-101.jpg
   tytul: Dworzec
   technika: tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-102.jpg
   tytul: Błaznowie
   technika: batik i akryl na tkaninie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-103.jpg
   tytul: Babcia w wianku
   technika: ołówek i kredki na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-104.jpg
   tytul: Przydrożna kapliczka
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-105.jpg
   tytul: Wodospad
   technika: tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-106.jpg
   tytul: Kary koń
   technika: pastel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-107.jpg
   tytul: Bukiet z granatem
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-108.jpg
   tytul: Anioł fryzjerski
   technika: akryl i złoto płatkowe na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-109.jpg
   tytul: Dama w różowej sukni
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-110.jpg
   tytul: Mglisty las
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-111.jpg
   tytul: Kamienny most
   technika: pastele olejne na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-112.jpg
   tytul: Ptaszki
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-113.jpg
   tytul: Maki
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-114.jpg
   tytul: Maki II
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-115.jpg
   tytul: Irysy
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-116.jpg
   tytul: Koniczyna z ważką
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-117.jpg
   tytul: Kościół
   technika: akryl na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-118.jpg
   tytul: Żółta lilia
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-119.jpg
   tytul: Martwa natura z figami
   technika: olej na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-120.jpg
   tytul: Polne kwiaty
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-121.jpg
   tytul: Liliowiec
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-122.jpg
   tytul: Nad jeziorem
   technika: pastele olejne na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-123.jpg
   tytul: Staw z łódką
   technika: pastele olejne na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-124.jpg
   tytul: Puszysty ptaszek
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-125.jpg
   tytul: Magnolia
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-126.jpg
   tytul: Zatoka
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-127.jpg
   tytul: Zatoka II
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-128.jpg
   tytul: Irysy II
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-129.jpg
   tytul: Dziewczyna
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-130.jpg
   tytul: Martini
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-131.jpg
   tytul: Ptaszek na turkusowym tle
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-132.jpg
   tytul: Anioł z lokami
   technika: akryl na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-133.jpg
   tytul: Anioł z warkoczem
   technika: akryl na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-134.jpg
   tytul: Anioł w zieleni
   technika: akryl na desce
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-135.jpg
   tytul: Ptaszek na zielonym tle
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-136.jpg
   tytul: Latarnia
   technika: pastel i węgiel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-137.jpg
   tytul: Posąg
   technika: węgiel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-138.jpg
   tytul: Kamienica z drzewem
   technika: węgiel i pastel na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-139.jpg
   tytul: Żaglówki
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-140.jpg
   tytul: Spojrzenie
   technika: ołówek na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-141.jpg
   tytul: Zachód słońca nad jeziorem
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-142.jpg
   tytul: Cisza nad jeziorem
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-143.jpg
   tytul: Wędkarz na jeziorze
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-144.jpg
   tytul: Latarnie
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-145.jpg
   tytul: Grudziądz – szkice
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-146.jpg
   tytul: Grudziądz – szkice II
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-147.jpg
   tytul: Panorama Grudziądza
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-148.jpg
   tytul: Portret kobiety
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-149.jpg
   tytul: Puszysty ptaszek II
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-150.jpg
   tytul: Ptaszki II
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-151.jpg
   tytul: Spider-Man
   technika: technika mieszana na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-152.jpg
   tytul: Kwiaty – cykl
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-153.jpg
   tytul: Piwonie
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-154.jpg
   tytul: Niebieskie drzwi
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-155.jpg
   tytul: Pole słoneczników
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-156.jpg
   tytul: Wiejski pejzaż
   technika: akwarela na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-157.jpg
   tytul: Młyn wodny
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-158.jpg
   tytul: Zwierzęta z gospodarstwa
   technika: akwarela i tusz na papierze
-  wyrozniony: false
-  ukryty: false
 - zdjecie: /src/tresci/obrazy/obraz-159.jpg
   tytul: Kwiaty zamiast myśli
   technika: akryl na płótnie
-  wyrozniony: false
-  ukryty: false
