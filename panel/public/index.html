@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Zarządzania Pracami – Karolina Chrobot</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome 6 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <!-- Custom CSS (Flexbox only) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-light">
+
+  <!-- GŁÓWNY PASEK NAWIGACJI -->
+  <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+    <div class="container px-3 px-lg-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <a class="navbar-brand d-flex align-items-center gap-2 mb-0" href="#">
+          <i class="fa-solid fa-palette text-warning"></i>
+          <span class="fw-bold">Karolina Chrobot</span>
+          <span class="badge bg-secondary text-uppercase fs-8">Panel</span>
+        </a>
+        <!-- Zakładki kategorii -->
+        <nav class="d-flex gap-1" id="navKategorie">
+          <button type="button" class="btn btn-sm btn-outline-light active d-flex align-items-center gap-2"
+            data-kat="obrazy">
+            <i class="fa-solid fa-paintbrush"></i> <span>Obrazy</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2"
+            data-kat="aranzacje">
+            <i class="fa-solid fa-couch"></i> <span>Aranżacje</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2" data-kat="dyplomy">
+            <i class="fa-solid fa-award"></i> <span>Dyplomy</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Akcje globalne: Dodaj, Podgląd, Deploy -->
+      <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-success d-flex align-items-center gap-2" id="btnOtworzDodaj">
+          <i class="fa-solid fa-plus"></i> <span class="d-none d-md-inline">Dodaj nową pracę</span>
+        </button>
+
+        <!-- Przycisk Podglądu Astro -->
+        <div class="btn-group">
+          <button type="button" class="btn btn-outline-info d-flex align-items-center gap-2" id="btnDevModal">
+            <i class="fa-solid fa-eye"></i> <span class="d-none d-md-inline">Podgląd</span>
+            <span class="badge bg-secondary" id="badgeDevStatus">...</span>
+          </button>
+          <a href="http://localhost:4321" target="_blank" rel="noopener" class="btn btn-outline-info"
+            title="Otwórz podgląd w nowej karcie">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </a>
+        </div>
+
+        <!-- Przycisk Publikuj (Cloudflare Deploy) -->
+        <button type="button" class="btn btn-warning d-flex align-items-center gap-2 fw-semibold" id="btnDeployModal">
+          <i class="fa-solid fa-cloud-arrow-up"></i> <span class="d-none d-md-inline">Publikuj</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PASEK NARZĘDZI I WYSZUKIWARKA -->
+  <div class="bg-white border-bottom shadow-sm py-3 mb-4">
+    <div class="container-fluid px-3 px-lg-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <!-- Liczniki i tytuł sekcji -->
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+          <h1 class="h4 mb-0 fw-bold text-dark d-flex align-items-center gap-2" id="naglowekKategorii">
+            <i class="fa-solid fa-paintbrush text-primary"></i> Obrazy
+          </h1>
+          <div class="d-flex align-items-center gap-2" id="statystykiPrac">
+            <span class="badge bg-primary rounded-pill fs-7 d-flex align-items-center gap-1">
+              <span id="licznikWszystkich">0</span> prac
+            </span>
+            <span class="badge bg-warning text-dark rounded-pill fs-7 d-flex align-items-center gap-1">
+              <i class="fa-solid fa-star"></i> <span id="licznikWyroznionych">0</span>
+            </span>
+            <span class="badge bg-secondary rounded-pill fs-7 d-flex align-items-center gap-1">
+              <i class="fa-solid fa-eye-slash"></i> <span id="licznikUkrytych">0</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Wyszukiwarka i filtr -->
+        <div class="d-flex align-items-center gap-2 flex-grow-1 flex-md-grow-0"
+          style="min-width: 280px; max-width: 450px;">
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0">
+              <i class="fa-solid fa-magnifying-glass text-muted"></i>
+            </span>
+            <input type="text" class="form-control border-start-0 ps-0" id="inputSzukaj"
+              placeholder="Szukaj po tytule, technice, roku...">
+            <button class="btn btn-outline-secondary" type="button" id="btnWyczyscSzukaj" title="Wyczyść filtr">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wskazówka o kolejności -->
+      <div class="alert alert-light border mt-3 mb-0 py-2 px-3 d-flex align-items-center gap-2 text-muted fs-8">
+        <i class="fa-solid fa-circle-info text-primary"></i>
+        <span>
+          <strong>Kolejność:</strong> Prace wyświetlane są dokładnie tak, jak w galerii na stronie (pozycja
+          <strong>#1</strong> to pierwsza praca na samej górze).
+          Użyj przycisków ze strzałkami lub przeciągaj za uchwyt <i class="fa-solid fa-grip-vertical"></i>, aby zmienić
+          układ.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KONTENER GŁÓWNY Z LISTĄ PRAC -->
+  <main class="container-fluid px-3 px-lg-4 pb-5">
+    <!-- Spinner ładowania -->
+    <div id="loader" class="d-flex justify-content-center align-items-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Ładowanie prac...</span>
+      </div>
+    </div>
+
+    <!-- Pusta lista komunikat -->
+    <div id="brakWynikow" class="d-none alert alert-warning text-center py-5 my-4">
+      <i class="fa-solid fa-image fa-3x text-warning mb-3"></i>
+      <h5 class="fw-bold">Nie znaleziono żadnych prac</h5>
+      <p class="text-muted mb-3">Brak pozycji dla wybranego filtru lub w tej kategorii.</p>
+      <button class="btn btn-primary d-inline-flex align-items-center gap-2" id="btnDodajPustyStan">
+        <i class="fa-solid fa-plus"></i> Dodaj pierwszą pracę
+      </button>
+    </div>
+
+    <!-- Lista prac w flexboxie -->
+    <div class="lista-prac-kontener d-flex flex-column gap-2" id="listaPrac">
+      <!-- Elementy generowane dynamicznie przez app.js -->
+    </div>
+  </main>
+
+  <!-- MODAL: DODAJ NOWĄ PRACĘ -->
+  <div class="modal fade" id="modalDodaj" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <form id="formularzDodaj">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title d-flex align-items-center gap-2">
+              <i class="fa-solid fa-plus-circle"></i> Dodaj nową pracę
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+              aria-label="Zamknij"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <!-- Upload i podgląd pliku -->
+              <div class="col-12 col-md-5">
+                <label class="form-label fw-bold">Zdjęcie pracy <span class="text-danger">*</span></label>
+                <div
+                  class="upload-dropzone d-flex flex-column align-items-center justify-content-center border border-2 border-dashed rounded p-3 text-center bg-light"
+                  id="dropzoneDodaj">
+                  <img id="podgladNowegoZdjecia" src="" alt="Podgląd" class="img-fluid rounded mb-2 d-none"
+                    style="max-height: 200px; object-fit: contain;">
+                  <i class="fa-solid fa-cloud-arrow-up fa-2x text-muted mb-2" id="ikonaDropzone"></i>
+                  <span class="fs-8 text-muted mb-2" id="tekstDropzone">Kliknij lub przeciągnij plik JPG, PNG,
+                    WebP</span>
+                  <input type="file" id="inputPlikNowy" name="zdjeciePlik" accept="image/*"
+                    class="form-control form-control-sm" required>
+                </div>
+              </div>
+
+              <!-- Metadane -->
+              <div class="col-12 col-md-7 d-flex flex-column gap-3">
+                <div>
+                  <label class="form-label fw-bold">Tytuł pracy</label>
+                  <input type="text" class="form-control" name="tytul" placeholder="np. Słoneczniki">
+                </div>
+
+                <div class="row g-2">
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Technika</label>
+                    <input type="text" class="form-control" name="technika" placeholder="np. olej na płótnie"
+                      list="listaTechnik">
+                    <datalist id="listaTechnik">
+                      <option value="olej na płótnie">
+                      <option value="akryl na płótnie">
+                      <option value="akwarela na papierze">
+                      <option value="akwarela i tusz na papierze">
+                      <option value="pastel na papierze">
+                      <option value="węgiel na papierze">
+                      <option value="ołówek na papierze">
+                      <option value="technika mieszana na papierze">
+                    </datalist>
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Wymiary</label>
+                    <input type="text" class="form-control" name="wymiary" placeholder="np. 40 × 50 cm">
+                  </div>
+                </div>
+
+                <div class="row g-2">
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Rok powstania</label>
+                    <input type="text" class="form-control" name="rok" value="2026" placeholder="2026">
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Pozycja w galerii</label>
+                    <select class="form-select" name="pozycja">
+                      <option value="poczatek" selected>Na początku galerii (najnowszy)</option>
+                      <option value="koniec">Na końcu galerii</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Opis (widoczny w powiększeniu)</label>
+                  <textarea class="form-control" name="opis" rows="2"
+                    placeholder="Opcjonalny krótki opis..."></textarea>
+                </div>
+
+                <!-- Checkboxy wyróżniony i ukryty -->
+                <div class="d-flex gap-4 pt-1">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="wyrozniony" id="checkWyroznionyNowy"
+                      value="true">
+                    <label class="form-check-label" for="checkWyroznionyNowy">
+                      <i class="fa-solid fa-star text-warning"></i> Wyróżniony na Głównej
+                    </label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="ukryty" id="checkUkrytyNowy" value="true">
+                    <label class="form-check-label" for="checkUkrytyNowy">
+                      <i class="fa-solid fa-eye-slash text-muted"></i> Ukryty
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+            <button type="submit" class="btn btn-success d-flex align-items-center gap-2" id="btnZapiszNowy">
+              <i class="fa-solid fa-floppy-disk"></i> Zapisz i dodaj
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EDYTUJ PRACĘ -->
+  <div class="modal fade" id="modalEdytuj" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <form id="formularzEdytuj">
+          <input type="hidden" name="zdjecie" id="editZdjecie">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title d-flex align-items-center gap-2">
+              <i class="fa-solid fa-pen-to-square"></i> Edytuj dane pracy
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+              aria-label="Zamknij"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <!-- Podgląd zdjęcia -->
+              <div class="col-12 col-md-5 d-flex flex-column align-items-center">
+                <div class="border rounded p-2 bg-light w-100 d-flex flex-column align-items-center">
+                  <img id="editPodgladZdjecia" src="" alt="Podgląd" class="img-fluid rounded mb-2"
+                    style="max-height: 220px; object-fit: contain;">
+                  <span class="fs-8 text-break text-muted text-center" id="editSciezkaZdjecia"></span>
+                </div>
+              </div>
+
+              <!-- Formularz pól -->
+              <div class="col-12 col-md-7 d-flex flex-column gap-3">
+                <div>
+                  <label class="form-label fw-bold">Tytuł pracy</label>
+                  <input type="text" class="form-control" name="tytul" id="editTytul" placeholder="Tytuł pracy">
+                </div>
+
+                <div class="row g-2">
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Technika</label>
+                    <input type="text" class="form-control" name="technika" id="editTechnika"
+                      placeholder="np. olej na płótnie" list="listaTechnik">
+                  </div>
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Wymiary</label>
+                    <input type="text" class="form-control" name="wymiary" id="editWymiary"
+                      placeholder="np. 40 × 50 cm">
+                  </div>
+                </div>
+
+                <div class="row g-2">
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-bold">Rok powstania</label>
+                    <input type="text" class="form-control" name="rok" id="editRok" placeholder="np. 2026">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="form-label fw-bold">Opis (widoczny w powiększeniu)</label>
+                  <textarea class="form-control" name="opis" id="editOpis" rows="3"
+                    placeholder="Dodatkowy opis..."></textarea>
+                </div>
+
+                <!-- Checkboxy -->
+                <div class="d-flex gap-4 pt-1">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="wyrozniony" id="editWyrozniony" value="true">
+                    <label class="form-check-label" for="editWyrozniony">
+                      <i class="fa-solid fa-star text-warning"></i> Wyróżniony na Głównej
+                    </label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="ukryty" id="editUkryty" value="true">
+                    <label class="form-check-label" for="editUkryty">
+                      <i class="fa-solid fa-eye-slash text-muted"></i> Ukryty
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+            <button type="submit" class="btn btn-primary d-flex align-items-center gap-2" id="btnZapiszEdycje">
+              <i class="fa-solid fa-floppy-disk"></i> Zapisz zmiany
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: USUŃ PRACĘ -->
+  <div class="modal fade" id="modalUsun" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title d-flex align-items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i> Potwierdź usunięcie
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div class="mb-3">
+            <img id="usunPodgladZdjecia" src="" alt="Praca" class="img-thumbnail"
+              style="max-height: 120px; object-fit: contain;">
+          </div>
+          <h6 class="fw-bold mb-1" id="usunTytulPracy">Tytuł pracy</h6>
+          <p class="text-muted fs-8 mb-4" id="usunSciezkaPracy">/src/tresci/obrazy/obraz-001.jpg</p>
+
+          <div class="alert alert-warning text-start py-2 px-3 mb-3 fs-8">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="checkUsunPlikZDysku" checked>
+              <label class="form-check-label fw-bold text-danger" for="checkUsunPlikZDysku">
+                Usuń również fizyczny plik graficzny z dysku
+              </label>
+            </div>
+          </div>
+          <p class="text-muted fs-8 mb-0">Po usunięciu z listy YAML pozycja zniknie z galerii na stronie.</p>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+          <button type="button" class="btn btn-danger d-flex align-items-center gap-2" id="btnPotwierdzUsun">
+            <i class="fa-solid fa-trash-can"></i> Tak, usuń
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: PODGLĄD ASTRO DEV -->
+  <div class="modal fade" id="modalDev" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title d-flex align-items-center gap-2">
+            <i class="fa-solid fa-laptop-code text-info"></i> Lokalny serwer podglądu (Astro Dev)
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+        </div>
+        <div class="modal-body">
+          <div
+            class="d-flex justify-content-between align-items-center p-3 bg-light rounded border mb-3 flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-3">
+              <span class="status-indicator" id="devStatusDot"></span>
+              <div>
+                <strong id="devStatusTekst">Sprawdzanie statusu...</strong>
+                <div class="fs-8 text-muted">Lokalny adres: <a href="http://localhost:4321" target="_blank"
+                    rel="noopener" class="fw-semibold">http://localhost:4321</a></div>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-success d-flex align-items-center gap-2" id="btnDevStart">
+                <i class="fa-solid fa-play"></i> Uruchom podgląd
+              </button>
+              <button type="button" class="btn btn-danger d-flex align-items-center gap-2" id="btnDevStop">
+                <i class="fa-solid fa-stop"></i> Zatrzymaj
+              </button>
+              <a href="http://localhost:4321" target="_blank" rel="noopener"
+                class="btn btn-primary d-flex align-items-center gap-2" id="btnDevOtworz">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Otwórz w karcie
+              </a>
+            </div>
+          </div>
+
+          <label class="form-label fw-bold fs-8 text-muted text-uppercase">Konsola serwera developerskiego</label>
+          <pre class="terminal-box bg-dark text-light p-3 rounded fs-8 mb-0" id="devConsoleLog"
+            style="height: 250px; overflow-y: auto;">Brak logów...</pre>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DEPLOY NA CLOUDFLARE -->
+  <div class="modal fade" id="modalDeploy" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title d-flex align-items-center gap-2 fw-bold">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Publikacja na Cloudflare (Wrangler Deploy)
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"
+            id="btnDeployZamknijX"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted mb-3">
+            To polecenie wykona <code>npm run deploy</code> (kompilacja strony <code>astro build</code> oraz publikacja
+            przez <code>wrangler pages deploy</code>).
+          </p>
+
+          <!-- Status / Spinner -->
+          <div class="alert alert-light border d-flex align-items-center gap-3 p-3 mb-3" id="deployStatusAlert">
+            <div class="spinner-border text-warning d-none" id="deploySpinner" role="status"></div>
+            <i class="fa-solid fa-circle-question fa-2x text-muted" id="deployStatusIkona"></i>
+            <div>
+              <strong id="deployStatusTytul">Gotowy do publikacji</strong>
+              <div class="fs-8 text-muted" id="deployStatusOpis">Kliknij poniższy przycisk, aby rozpocząć proces
+                wdrożenia.</div>
+            </div>
+          </div>
+
+          <!-- Okno terminala -->
+          <label class="form-label fw-bold fs-8 text-muted text-uppercase">Dziennik wdrożenia (Wrangler Output)</label>
+          <pre class="terminal-box bg-dark text-light p-3 rounded fs-8 mb-0" id="deployLogBox"
+            style="height: 280px; overflow-y: auto;">Oczekiwanie na uruchomienie...</pre>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnDeployAnuluj">Zamknij</button>
+          <button type="button" class="btn btn-warning fw-bold d-flex align-items-center gap-2" id="btnUruchomDeploy">
+            <i class="fa-solid fa-rocket"></i> Rozpocznij publikację teraz
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOASTY POWIADOMIEŃ -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">
+    <div id="toastPowiadomienie" class="toast align-items-center border-0 shadow" role="alert" aria-live="assertive"
+      aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2 fs-7" id="toastTresc">
+          <i class="fa-solid fa-circle-check text-success"></i> Zapisano pomyślnie.
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Zamknij"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Skrypt panelu -->
+  <script src="js/app.js" type="module"></script>
+</body>
+
+</html>

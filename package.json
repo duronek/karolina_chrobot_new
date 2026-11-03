@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "astro build && wrangler pages deploy"
+    "deploy": "astro build && wrangler pages deploy",
+    "panel": "node panel/server.js"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",

@@ -3,7 +3,7 @@ import { parse } from 'yaml';
 
 /**
  * Zbiory prac. Zdjęcia leżą w src/tresci/<zbior>/, a lista prac (kolejność, tytuły, opisy)
- * w src/dane/<zbior>.yml – tę listę edytuje panel Pages CMS (konfiguracja w .pages.yml).
+ * w src/dane/<zbior>.yml.
  * Lista jest chronologiczna: ostatnia pozycja to najnowsza praca i wyświetla się jako pierwsza.
  */
 export type Zbior = 'obrazy' | 'aranzacje' | 'dyplomy';
