@@ -134,15 +134,23 @@ Zasada wyświetlania jest chronologiczna – najnowsze pozycje pojawiają się n
 Do publikacji strony służy oficjalne narzędzie [Cloudflare Wrangler](https://developers.cloudflare.com/workers/wrangler/).  
 Konfiguracja wdrożenia znajduje się w pliku `wrangler.jsonc` (projekt `karolina-chrobot`, katalog wyjściowy `./dist`).
 
-### 1. Jednorazowe logowanie
+### 1. Autoryzacja (do wyboru)
 
-Przed pierwszym wdrożeniem z poziomu terminala należy zalogować się do swojego konta Cloudflare:
+Możesz autoryzować Wranglera na dwa sposoby:
 
-```bash
-npx wrangler login
-```
+- **Sposób A (Zalecany do delegowania / innej osoby): Plik `.env`**  
+  Utwórz plik `.env` na wzór `.env.example`:
+  ```env
+  CLOUDFLARE_API_TOKEN=twoj_token_api
+  CLOUDFLARE_ACCOUNT_ID=twoje_account_id
+  ```
+  Wrangler automatycznie użyje tego tokenu przy deployu – nie wymaga logowania w przeglądarce i ogranicza dostęp wyłącznie do tego projektu.
 
-Polecenie otworzy kartę w przeglądarce, gdzie wystarczy zatwierdzić dostęp do konta Cloudflare.
+- **Sposób B: Jednorazowe logowanie w przeglądarce**  
+  ```bash
+  npx wrangler login
+  ```
+  Polecenie otworzy kartę w przeglądarce, gdzie wystarczy zatwierdzić dostęp do konta Cloudflare.
 
 ### 2. Publikacja jednym poleceniem
 
