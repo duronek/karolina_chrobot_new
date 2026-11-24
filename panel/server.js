@@ -21,26 +21,9 @@ export const createAppServer = (config = {}) => {
   const processRunner = createProcessRunner({ rootDir });
   const app = express();
 
-  // Konfiguracja uploadu zdjęć przez multer
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      const kategoria = req.body.kategoria || 'obrazy';
-      const destDir = dataManager.sciezkaKataloguTresci(kategoria);
-      if (!fs.existsSync(destDir)) {
-        fs.mkdirSync(destDir, { recursive: true });
-      }
-      cb(null, destDir);
-    },
-    filename: (req, file, cb) => {
-      const kategoria = req.body.kategoria || 'obrazy';
-      const nazwaPliku = dataManager.generujUnikalnaNazwe(kategoria, file.originalname);
-      req.wygenerowanaNazwaPliku = nazwaPliku;
-      cb(null, nazwaPliku);
-    }
-  });
-
+  // Konfiguracja uploadu zdjęć przez multer (memoryStorage gwarantuje pełny dostęp do req.body przed zapisem pliku)
   const upload = multer({
-    storage,
+    storage: multer.memoryStorage(),
     limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
     fileFilter: (req, file, cb) => {
       const dozwoloneRozszerzenia = /\.(jpg|jpeg|png|webp|avif)$/i;
@@ -77,14 +60,21 @@ export const createAppServer = (config = {}) => {
   // Dodanie nowej pracy z uploadem zdjęcia
   app.post('/api/prace', upload.single('zdjeciePlik'), (req, res) => {
     try {
-      const kategoria = req.body.kategoria || 'obrazy';
+      const kategoria = req.body.kategoria || req.query.kategoria || 'obrazy';
       if (!req.file && !req.body.zdjecieIstniejace) {
         return res.status(400).json({ sukces: false, blad: 'Plik zdjęcia jest wymagany.' });
       }
 
-      const sciezkaZdjecia = req.file
-        ? `/src/tresci/${kategoria}/${req.wygenerowanaNazwaPliku}`
-        : req.body.zdjecieIstniejace;
+      let sciezkaZdjecia = req.body.zdjecieIstniejace;
+      if (req.file) {
+        const destDir = dataManager.sciezkaKataloguTresci(kategoria);
+        if (!fs.existsSync(destDir)) {
+          fs.mkdirSync(destDir, { recursive: true });
+        }
+        const nazwaPliku = dataManager.generujUnikalnaNazwe(kategoria, req.file.originalname);
+        fs.writeFileSync(path.join(destDir, nazwaPliku), req.file.buffer);
+        sciezkaZdjecia = `/src/tresci/${kategoria}/${nazwaPliku}`;
+      }
 
       const pozycja = req.body.pozycja || 'poczatek'; // domyślnie na początku galerii
       const nowaPraca = dataManager.dodajPrace(

@@ -8,10 +8,14 @@ import karolina from '../tresci/zdjecia/karolina-glowna.jpg';
 const obrazy = getPrace('obrazy');
 const wyroznione = obrazy.filter((p) => p.wyrozniony);
 const slajdy = await Promise.all(
-  (wyroznione.length ? wyroznione : obrazy.slice(0, 8)).map((p) =>
-    getImage({ src: p.image, width: Math.min(p.image.width, 1100), format: 'webp', quality: 80 }),
-  ),
+  (wyroznione.length ? wyroznione : obrazy.slice(0, 8)).map(async (p) => ({
+    img: await getImage({ src: p.image, width: Math.min(p.image.width, 1100), format: 'webp', quality: 80 }),
+    tytul: p.tytul ?? '',
+    opis: p.opis || [p.technika, p.wymiary, p.rok].filter(Boolean).join(' · '),
+  })),
 );
+const pierwszySlajd = slajdy[0];
+const pierwszyLabel = [pierwszySlajd?.tytul, pierwszySlajd?.opis].filter(Boolean).join(' – ');
 
 const najnowsze = await Promise.all(
   obrazy.slice(0, 14).map(async (p) => ({
@@ -111,15 +115,22 @@ const imie = 'Karolina Chrobot';
       </div>
 
       <div data-reveal="zoom">
-      <a href="/galeria/" class="promo" data-tilt aria-label="Kobieta – Malarstwo olejne. Przejdź do galerii">
+      <a
+        href="/galeria/"
+        class="promo"
+        data-tilt
+        aria-label={pierwszyLabel ? `${pierwszyLabel}. Przejdź do galerii` : 'Przejdź do galerii'}
+      >
         <div class="slides" data-slides>
           {
-            slajdy.map((s, i) => (
+            slajdy.map(({ img, tytul, opis }, i) => (
               <img
-                src={s.src}
-                width={s.attributes.width}
-                height={s.attributes.height}
+                src={img.src}
+                width={img.attributes.width}
+                height={img.attributes.height}
                 alt=""
+                data-tytul={tytul}
+                data-opis={opis}
                 class={i === 0 ? 'active' : undefined}
                 loading={i === 0 ? 'eager' : 'lazy'}
                 decoding="async"
@@ -128,8 +139,8 @@ const imie = 'Karolina Chrobot';
           }
         </div>
         <div class="promo-text">
-          <h3 class="promo-header">Kobieta</h3>
-          <p class="promo-content">Malarstwo olejne</p>
+          <h3 class="promo-header" data-promo-header>{pierwszySlajd?.tytul ?? ''}</h3>
+          <p class="promo-content" data-promo-content hidden={!pierwszySlajd?.opis}>{pierwszySlajd?.opis ?? ''}</p>
         </div>
         <div class="dots" aria-hidden="true">
           {slajdy.map((_, i) => <span class={i === 0 ? 'active' : undefined} />)}
@@ -167,7 +178,7 @@ const imie = 'Karolina Chrobot';
 </Layout>
 
 <script>
-  // Ramka „Kobieta” – obrazy zmieniają się co 5 sekund z płynnym przenikaniem
+  // Ramka wyróżnionych obrazów – obrazy i opisy zmieniają się co 5 sekund z płynnym przenikaniem
   let timer: number | undefined;
   document.addEventListener('astro:page-load', () => {
     clearInterval(timer);
@@ -175,7 +186,26 @@ const imie = 'Karolina Chrobot';
     if (!box) return;
     const slides = [...box.querySelectorAll('img')];
     const dots = [...document.querySelectorAll('.dots span')];
+    const promo = box.closest<HTMLAnchorElement>('.promo');
+    const headerEl = promo?.querySelector<HTMLElement>('[data-promo-header]');
+    const contentEl = promo?.querySelector<HTMLElement>('[data-promo-content]');
     if (slides.length < 2) return;
+
+    const aktualizujTekst = (idx: number) => {
+      const img = slides[idx];
+      const tytul = img.dataset.tytul ?? '';
+      const opis = img.dataset.opis ?? '';
+      if (headerEl) headerEl.textContent = tytul;
+      if (contentEl) {
+        contentEl.textContent = opis;
+        contentEl.hidden = !opis;
+      }
+      if (promo) {
+        const etykieta = [tytul, opis].filter(Boolean).join(' – ');
+        promo.setAttribute('aria-label', etykieta ? `${etykieta}. Przejdź do galerii` : 'Przejdź do galerii');
+      }
+    };
+
     let n = 0;
     timer = window.setInterval(() => {
       slides[n].classList.remove('active');
@@ -184,8 +214,10 @@ const imie = 'Karolina Chrobot';
       slides[n].loading = 'eager';
       slides[n].classList.add('active');
       dots[n]?.classList.add('active');
+      aktualizujTekst(n);
     }, 5000);
   });
+  document.addEventListener('astro:before-swap', () => clearInterval(timer));
 
   // Pas najnowszych prac: płynie stale, a przy przewijaniu przyspiesza, zmienia kierunek
   // zgodnie z kierunkiem przewijania i lekko się pochyla.
@@ -551,7 +583,8 @@ const imie = 'Karolina Chrobot';
   .promo-text {
     position: absolute;
     left: clamp(20px, 3vw, 36px);
-    bottom: clamp(20px, 3vw, 36px);
+    right: clamp(20px, 3vw, 36px);
+    bottom: clamp(42px, 4.5vw, 56px);
     z-index: 1;
   }
 

@@ -661,8 +661,11 @@ const createAppController = (api, toast) => {
       btnZapiszNowy.disabled = true;
       btnZapiszNowy.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Zapisywanie...`;
 
-      const formData = new FormData(formDodaj);
+      const formData = new FormData();
       formData.append('kategoria', aktualnaKategoria);
+      new FormData(formDodaj).forEach((value, key) => {
+        formData.append(key, value);
+      });
 
       try {
         const resp = await api.dodajPrace(formData);
